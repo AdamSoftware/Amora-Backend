@@ -1,0 +1,47 @@
+
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    networks:
+      - appnet
+    environment:
+      POSTGRES_USER: ${AmoradbUser}
+      POSTGRES_PASSWORD: ${AmoradbPassword}
+      POSTGRES_DB: Amoradb
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrate
+    depends_on:
+      - db
+    environment:
+      - AmoradbConnectionString=${AmoradbConnectionString}
+    networks:
+      - appnet
+
+  app:
+    build: .
+    depends_on:
+      - db
+      - migrate
+    environment:
+      - DATABASE_URL=${AmoradbConnectionString}
+    networks:
+      - appnet
+    ports:
+      - "8080:8080"
+    command: ["./your-app-binary"]
+
+volumes:
+  db-data:
+
+networks:
+  appnet:
+
