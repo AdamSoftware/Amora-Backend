@@ -2,7 +2,7 @@ package CoreService
 
 import (
 	"Amora/internal/core"
-	"Amora/internal/Core/CoreRepository"
+	"Amora/internal/core/CoreRepository"
 	"Amora/internal/Logging"
 	"fmt"
 )
@@ -52,7 +52,9 @@ func (s *CoreServiceInit[T]) Update(entity T) (T, error) {
 	updatedEntity, err := s.repo.Update(entity)
 	if err != nil {
 		Logging.Logs.Error(fmt.Sprintf("Error updating entity: %v", err))
-		return updatedEntity, err
+		// returning a zero value of T in case of error for better clarity
+		var zero T
+		return zero, err
 	}
 	return updatedEntity, nil
 }

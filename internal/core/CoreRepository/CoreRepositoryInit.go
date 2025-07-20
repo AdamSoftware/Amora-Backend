@@ -74,7 +74,7 @@ func (r *CoreRepositoryInit[T]) Update(entity T) (T, error) {
     Logging.Logs.Infof("Before save: %+v", entity)
 
     // Perform the update
-    if err := r.db.Save(entity).Error; err != nil {
+    if err := r.db.Save(&entity).Error; err != nil {
         var zero T
 				Logging.Logs.Errorf("Error updating entity: %v", err)
         return zero, err
