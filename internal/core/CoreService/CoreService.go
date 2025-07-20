@@ -2,7 +2,7 @@ package CoreService
 
 type Entity interface{ GetId() int }
 
-type CoreService[T any] interface {
+type CoreService[T Entity] interface {
 	Get() ([]T, error)
 	FindById(id int) (T, error)
 	Insert(entity T) (T, error)
