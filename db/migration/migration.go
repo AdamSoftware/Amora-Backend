@@ -1,55 +1,43 @@
-package migration 
+
+package migration
 
 import (
+	"Amora/Init"
 	"log"
-	"os"
-	"time"
-	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"database/sql"
 )
 
+func Migrations(run bool) {
+	if !run {
+		log.Println("Skipping migrations, Migrations was turned off.")
+		return
+	}
 
-func migrations() {
-	err := godotenv.Load()
+	// Initialize the database connection
+	db := Init.DBinit()
+
+  sqlDB, err := db.DB()
+	defer sqlDB.Close()
+
+	driver, err := postgres.WithInstance(sqlDB, &postgres.Config{})
 	if err != nil {
-		log.Println("No .env file found or failed to load")
+		log.Fatalf("Failed to create migration driver: %v", err)
 	}
 
-	// this is the different URL for local development or dev from the container
-
-	dbURL := os.Getenv("AmoradbConnectionString")
-	//dbURL := os.Getenv("AmoradbConnectionStringLocal")
-	if dbURL == "" {
-		log.Fatal("AmoradbConnectionString is not set in environment")
-	}
-
-	maxRetries := 10
-	for i := 0; i < maxRetries; i++ {
-		db, err := sql.Open("postgres", dbURL)
-		if err == nil {
-			err = db.Ping()
-			if err == nil {
-				log.Println("Database is ready")
-				break
-			}
-		}
-		log.Printf("Waiting for database... (%d/%d)\n", i+1, maxRetries)
-		time.Sleep(3 * time.Second)
-	}
-
-	m, err := migrate.New("file://db/migrations", dbURL)
+	m, err := migrate.NewWithDatabaseInstance(
+		"file://db/migrations",
+		"postgres", driver)
 	if err != nil {
 		log.Fatalf("Failed to create migrate instance: %v", err)
 	}
-	if err := m.Up(); err != nil && err.Error() != "no change" {
+
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 		log.Fatalf("Migration failed: %v", err)
 	}
 
 	log.Println("Migration completed successfully.")
-
-	return;
 }
 
