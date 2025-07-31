@@ -12,7 +12,9 @@ func main() {
 	Logging.InitLogger()
 	// init all the database connections and setup
 	db := Init.DBinit()
- 
+
+	// initialize the routes
+	Init.RoutesInit(db)
 
 	// attach the database to the logger
 	Logging.Logs.AddHook(Logging.NewGormHook(db))

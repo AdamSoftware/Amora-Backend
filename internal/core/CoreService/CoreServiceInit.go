@@ -8,16 +8,16 @@ import (
 )
 
 type CoreServiceInit[T core.CoreModel] struct {
-	repo *CoreRepository.CoreRepositoryInit[T]
+	Repo *CoreRepository.CoreRepositoryInit[T]
 }
 
 func NewCoreServiceInit[T core.CoreModel](repo *CoreRepository.CoreRepositoryInit[T]) *CoreServiceInit[T] {
-	return &CoreServiceInit[T]{repo: repo}
+	return &CoreServiceInit[T]{Repo: repo}
 }
 
 // FindById retrieves an entity by its ID
 func (s *CoreServiceInit[T]) FindById(id int) (T, error) {
-	entity, err := s.repo.FindById(id)
+	entity, err := s.Repo.FindById(id)
 	if err != nil {
 		var zero T
 		return zero, fmt.Errorf("error finding entity with ID %d: %v", id, err)
@@ -27,7 +27,7 @@ func (s *CoreServiceInit[T]) FindById(id int) (T, error) {
 
 // Get retrieves all entities
 func (s *CoreServiceInit[T]) Get() ([]T, error) {
-	entities, err := s.repo.Get()
+	entities, err := s.Repo.Get()
 	if err != nil {
 		Logging.Logs.Error(fmt.Sprintf("Error retrieving entities: %v", err))
 		return nil, err
@@ -38,7 +38,7 @@ func (s *CoreServiceInit[T]) Get() ([]T, error) {
 
 // Insert adds a new entity
 func (s *CoreServiceInit[T]) Insert(entity T) (T, error) {
-	createdEntity, err := s.repo.Insert(entity)
+	createdEntity, err := s.Repo.Insert(entity)
 	if err != nil {
 		Logging.Logs.Error(fmt.Sprintf("Error inserting entity: %v", err))
 		var zero T
@@ -49,7 +49,7 @@ func (s *CoreServiceInit[T]) Insert(entity T) (T, error) {
 
 // Update modifies an existing entity
 func (s *CoreServiceInit[T]) Update(entity T) (T, error) {
-	updatedEntity, err := s.repo.Update(entity)
+	updatedEntity, err := s.Repo.Update(entity)
 	if err != nil {
 		Logging.Logs.Error(fmt.Sprintf("Error updating entity: %v", err))
 		// returning a zero value of T in case of error for better clarity
@@ -61,7 +61,7 @@ func (s *CoreServiceInit[T]) Update(entity T) (T, error) {
 
 // Delete removes an entity by its ID
 func (s *CoreServiceInit[T]) Delete(id int) error {
-	err := s.repo.Delete(id)
+	err := s.Repo.Delete(id)
 	if err != nil {
 		Logging.Logs.Error(fmt.Sprintf("Error deleting entity with ID %d: %v", id, err))
 		return err

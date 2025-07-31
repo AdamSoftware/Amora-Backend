@@ -9,7 +9,7 @@ import (
 )
 
 type CoreHandlerInit[T core.CoreModel] struct {
-	service *CoreService.CoreServiceInit[T]
+	Service *CoreService.CoreServiceInit[T]
 }
 
 func NewCoreHandlerInit[T core.CoreModel](service *CoreService.CoreServiceInit[T]) (*CoreHandlerInit[T], error) {
@@ -20,12 +20,12 @@ func NewCoreHandlerInit[T core.CoreModel](service *CoreService.CoreServiceInit[T
 		return nil, fmt.Errorf("Failed to create CoreHandler: %w", err)
 	}
 
-	return &CoreHandlerInit[T]{service: service}, nil
+	return &CoreHandlerInit[T]{Service: service}, nil
 }
 
 // FindById handler this will act a core method for all other handlers
 func (h *CoreHandlerInit[T]) FindById(id int) (*T, error) {
-	entity, err := h.service.FindById(id)
+	entity, err := h.Service.FindById(id)
 	if err != nil {
 		Logging.Logs.Errorf("Error finding entity with ID %d: %v", id, err)
 		return nil, fmt.Errorf("error finding entity with ID %d: %w", id, err)
@@ -35,7 +35,7 @@ func (h *CoreHandlerInit[T]) FindById(id int) (*T, error) {
 
 // Get handler will act as a core method for all the otehr get handler methods on all other tables
 func (h *CoreHandlerInit[T]) Get() ([]*T, error) {
-	entities, err := h.service.Get()
+	entities, err := h.Service.Get()
 	if err != nil {
 		Logging.Logs.Errorf("Error retrieving entities: %v", err)
 		return nil, fmt.Errorf("error retrieving entities: %w", err)
@@ -51,7 +51,7 @@ func (h *CoreHandlerInit[T]) Get() ([]*T, error) {
 
 // Insert handler
 func (h *CoreHandlerInit[T]) Insert(entity *T) (*T, error) {
-	createdEntity, err := h.service.Insert(*entity)
+	createdEntity, err := h.Service.Insert(*entity)
 	if err != nil {
 		Logging.Logs.Errorf("Error inserting entity: %v", err)
 		return nil, fmt.Errorf("error inserting entity: %w", err)
@@ -61,7 +61,7 @@ func (h *CoreHandlerInit[T]) Insert(entity *T) (*T, error) {
 
 // Update handler
 func (h *CoreHandlerInit[T]) Update(entity *T) (*T, error) {
-	updatedEntity, err := h.service.Update(*entity)
+	updatedEntity, err := h.Service.Update(*entity)
 	if err != nil {
 		Logging.Logs.Errorf("Error updating entity: %v", err)
 		return nil, fmt.Errorf("error updating entity: %w", err)
@@ -71,7 +71,7 @@ func (h *CoreHandlerInit[T]) Update(entity *T) (*T, error) {
 
 // Delete handler
 func (h *CoreHandlerInit[T]) Delete(id int) error {
-	err := h.service.Delete(id)
+	err := h.Service.Delete(id)
 	if err != nil {
 		Logging.Logs.Errorf("Error deleting entity with ID %d: %v", id, err)
 		return fmt.Errorf("error deleting entity with ID %d: %w", id, err)

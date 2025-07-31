@@ -3,6 +3,8 @@ package userService
 import (
 	"Amora/internal/Logging"
 	"Amora/internal/user/userRepository"
+	"Amora/internal/core/CoreService"
+	"Amora/internal/core/CoreHandler"
 	"errors"
 	"Amora/internal/user"
 )
@@ -10,6 +12,8 @@ import (
 
 type UserServiceInit struct {
 	userRepo *userRepository.UserRepositoryInit
+	CoreService *CoreService.CoreServiceInit[*user.Users]
+	CoreHandler *CoreHandler.CoreHandlerInit[*user.Users]
 }
 
 func NewUserServiceInit( userRepo *userRepository.UserRepositoryInit) (*UserServiceInit, error) {

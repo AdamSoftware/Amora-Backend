@@ -10,7 +10,7 @@ import (
 
 
 type UserRepositoryInit struct {
-	core  *CoreRepository.CoreRepositoryInit[*user.Users]
+	Core  *CoreRepository.CoreRepositoryInit[*user.Users]
 }
 
 func NewuserRepositoryInit(DB *gorm.DB) (*UserRepositoryInit, error) {
@@ -24,13 +24,13 @@ func NewuserRepositoryInit(DB *gorm.DB) (*UserRepositoryInit, error) {
 		return nil, errors.New("failed to initialize core repository")
 	}
 
-	return &UserRepositoryInit{ core : coreRepo }, nil
+	return &UserRepositoryInit{ Core : coreRepo }, nil
 }
     
 // GetUserByPhoneNumber
 func (u *UserRepositoryInit) GetUserByPhoneNumber(phoneNumber string) (*user.Users, error) {
     var user user.Users
-    err := u.core.DB.Where("phone_number = ?", phoneNumber).First(&user).Error
+    err := u.Core.DB.Where("phone_number = ?", phoneNumber).First(&user).Error
     if err != nil {
         if errors.Is(err, gorm.ErrRecordNotFound) {
             return nil, nil
@@ -45,7 +45,7 @@ func (u *UserRepositoryInit) GetUserByPhoneNumber(phoneNumber string) (*user.Use
 // GetUserByEmail
 func (u *UserRepositoryInit) GetUserByEmail(email string) (*user.Users, error) {
 	var user user.Users
-	err := u.core.DB.Where("email = ?", email).First(&user).Error
+	err := u.Core.DB.Where("email = ?", email).First(&user).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			Logging.Logs.Warnf("No user found with email %s", email)
