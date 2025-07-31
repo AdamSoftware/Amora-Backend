@@ -28,8 +28,8 @@ func NewCoreRepository[T core.CoreModel](DB *gorm.DB) (*CoreRepositoryInit[T], e
 	return &CoreRepositoryInit[T]{DB: DB}, nil
 }
 
-// FinDById returns a single entity by id well it should 
-func (r *CoreRepositoryInit[T]) FinDById(id int) (T, error) {
+// FindById returns a single entity by id well it should 
+func (r *CoreRepositoryInit[T]) FindById(id int) (T, error) {
 	var entity T
 	err := r.DB.First(&entity, id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {

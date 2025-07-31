@@ -9,11 +9,11 @@ import (
 )
 
 
-type userRepositoryInit struct {
+type UserRepositoryInit struct {
 	core  *CoreRepository.CoreRepositoryInit[*user.Users]
 }
 
-func NewuserRepositoryInit(DB *gorm.DB) (*userRepositoryInit, error) {
+func NewuserRepositoryInit(DB *gorm.DB) (*UserRepositoryInit, error) {
 	if DB == nil {
 		Logging.Logs.Warnf("Database connection is nil")
 	}
@@ -24,44 +24,26 @@ func NewuserRepositoryInit(DB *gorm.DB) (*userRepositoryInit, error) {
 		return nil, errors.New("failed to initialize core repository")
 	}
 
-	return &userRepositoryInit{ core : coreRepo }, nil
-}
-
-// Generic opperations done 
-
-func (u *userRepositoryInit) GetById(id int) (*user.Users, error) {
-	return u.core.FinDById(id) 
-}
-
-func (u *userRepositoryInit) Create(user *user.Users) (*user.Users, error) {
-	return u.core.Insert(user)
-}
-
-func (u *userRepositoryInit) Update(user *user.Users) (*user.Users, error) {
-	return u.core.Update(user)
-}
-
-func (u *userRepositoryInit) Delete(id int) error {
-	return u.core.Delete(id)
+	return &UserRepositoryInit{ core : coreRepo }, nil
 }
     
 // GetUserByPhoneNumber
-func (u *userRepositoryInit) GetUserByPhoneNumber(phoneNumber string) ([]*user.Users, error) {
-	var users []*user.Users
-	err := u.core.DB.Where("phone_number = ?", phoneNumber).Find(&users).Error
-	if err != nil {
-		Logging.Logs.Errorf("Error retrieving user by phone number %s: %v", phoneNumber, err)
-		return nil, err
-	}
-	if len(users) == 0 {
-		Logging.Logs.Warnf("No user found with phone number %s", phoneNumber)
-		return nil, nil
-	}
-	return users, nil
+func (u *UserRepositoryInit) GetUserByPhoneNumber(phoneNumber string) (*user.Users, error) {
+    var user user.Users
+    err := u.core.DB.Where("phone_number = ?", phoneNumber).First(&user).Error
+    if err != nil {
+        if errors.Is(err, gorm.ErrRecordNotFound) {
+            return nil, nil
+        }
+        Logging.Logs.Errorf("Error retrieving user by phone number %s: %v", phoneNumber, err)
+        return nil, err
+    }
+    return &user, nil
 }
 
+
 // GetUserByEmail
-func (u *userRepositoryInit) GetUserByEmail(email string) (*user.Users, error) {
+func (u *UserRepositoryInit) GetUserByEmail(email string) (*user.Users, error) {
 	var user user.Users
 	err := u.core.DB.Where("email = ?", email).First(&user).Error
 	if err != nil {
