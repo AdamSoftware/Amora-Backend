@@ -189,26 +189,24 @@ func (u *UserHandlerInit) Login(w http.ResponseWriter, r *http.Request) {
 		Password string `json:"password"`
 	}
 
+	// Parse request body
 	if err := json.NewDecoder(r.Body).Decode(&loginData); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	user, err := u.userService.Login(loginData.Email, loginData.Password)
+	// Call service layer to login
+	responseData, err := u.userService.Login(loginData.Email, loginData.Password)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
-	if user == nil {
-		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
-		return
-	}
-
+	// Respond with token + user
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(user)
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(responseData)
 }
-
 
 
 

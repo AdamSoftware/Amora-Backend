@@ -1,6 +1,7 @@
 package userService
 
 import (
+	"Amora/internal/Auth"
 	"Amora/internal/Logging"
 	"Amora/internal/user/userRepository"
 	"errors"
@@ -50,34 +51,39 @@ func (u *UserServiceInit) ForgotPassword(EmailOrPhoneNum string) (string, error)
 	return "Reset link sent to your email/phone", nil
 }
 
-// the login needs to check if the email matches a user and the passsword matches that usr too 
-func (u *UserServiceInit) Login(email, password string) (*user.Users, error) {
+
+func (u *UserServiceInit) Login(email, password string) (map[string]interface{}, error) {
 	if email == "" || password == "" {
-		Logging.Logs.Errorf("Email or password is empty")
 		return nil, errors.New("email or password cannot be empty")
 	}
 
 	User, err := u.userRepo.GetUserByEmail(email)
+	if err != nil || User == nil {
+		return nil, errors.New("invalid email or password")
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(User.Password), []byte(password)); err != nil {
+		return nil, errors.New("invalid email or password")
+	}
+
+	// Generate JWT
+	token, err := Auth.GenerateJWT(User)
 	if err != nil {
-		Logging.Logs.Errorf("Error retrieving user by email %s: %v", email, err)
 		return nil, err
 	}
 
-	if User == nil {
-		Logging.Logs.Warnf("No user found with email %s", email)
-		return nil, errors.New("user not found")
-	}
-
-	// Compare hashed password
-	if err := bcrypt.CompareHashAndPassword([]byte(User.Password), []byte(password)); err != nil {
-		Logging.Logs.Warnf("Incorrect password for user with email %s", email)
-		return nil, errors.New("incorrect password")
-	}
-
-	// (Optional) generate and return a token here
-
-	return User, nil
+	return map[string]interface{}{
+		"token": token,
+		"user": map[string]interface{}{
+			"id":         User.Id,
+			"email":      User.Email,
+			"firstname":  User.Firstname,
+			"lastname":   User.Lastname,
+			"phoneNumber": User.PhoneNumber,
+		},
+	}, nil
 }
+
 
 
 
