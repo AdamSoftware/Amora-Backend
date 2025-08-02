@@ -123,7 +123,7 @@ func (u *UserHandlerInit) Delete(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *UserHandlerInit) GetUserByPhoneNumber(w http.ResponseWriter, r *http.Request) {
-	phoneNumber := r.URL.Query().Get("phoneNumber")
+	phoneNumber := chi.URLParam(r, "phoneNumber") 
 	if phoneNumber == "" {
 		http.Error(w, "Missing phone number parameter", http.StatusBadRequest)
 		return
@@ -145,7 +145,7 @@ func (u *UserHandlerInit) GetUserByPhoneNumber(w http.ResponseWriter, r *http.Re
 }
 
 func (u *UserHandlerInit) GetUserByEmail(w http.ResponseWriter, r *http.Request) {
-	email := r.URL.Query().Get("email")
+	email := chi.URLParam(r, "email") 
 	if email == "" {
 		http.Error(w, "Missing email parameter", http.StatusBadRequest)
 		return
@@ -167,7 +167,7 @@ func (u *UserHandlerInit) GetUserByEmail(w http.ResponseWriter, r *http.Request)
 }
 
 func (u *UserHandlerInit) ForgotPassword(w http.ResponseWriter, r *http.Request) {
-	EmailOrPhoneNum := r.URL.Query().Get("emailOrPhoneNum")
+	EmailOrPhoneNum := chi.URLParam(r, "emailOrPhoneNum") 
 	if EmailOrPhoneNum == "" {
 		http.Error(w, "Missing email or phone number parameter", http.StatusBadRequest)
 		return

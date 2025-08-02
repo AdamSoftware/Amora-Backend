@@ -5,8 +5,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func UserRouter() *chi.Mux {
-	uHandler := userHandler.NewUserHandler()
+func UserRouter(uHandler *userHandler.UserHandlerInit) *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Get("/users", uHandler.Get)                  
@@ -14,10 +13,10 @@ func UserRouter() *chi.Mux {
 	r.Post("/users", uHandler.Insert)              
 	r.Put("/users/{id}", uHandler.Update)         
 	r.Delete("/users/{id}", uHandler.Delete)     
-	r.Get("/users/phone", uHandler.GetUserByPhoneNumber)
-	r.Get("/users/email", uHandler.GetUserByEmail)
+	r.Get("/users/phone/{phoneNumber}", uHandler.GetUserByPhoneNumber)
+	r.Get("/users/email/{email}", uHandler.GetUserByEmail)
 	r.Post("/users/login", uHandler.Login)
-	r.Post("/users/forgot-password", uHandler.ForgotPassword)
+	r.Post("/users/forgot-password/{emailOrPhoneNum}", uHandler.ForgotPassword)
 
 	return r
 }

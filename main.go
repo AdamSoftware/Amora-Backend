@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
   "Amora/db/migration"
 	"Amora/internal/Logging"
 	"Amora/Init"
@@ -12,6 +13,8 @@ func main() {
 	Logging.InitLogger()
 	// init all the database connections and setup
 	db := Init.DBinit()
+
+	fmt.Println("Database connection established", db)
 
 	// initialize the routes
 	Init.RoutesInit(db)

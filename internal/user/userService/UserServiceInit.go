@@ -3,17 +3,14 @@ package userService
 import (
 	"Amora/internal/Logging"
 	"Amora/internal/user/userRepository"
-	"Amora/internal/core/CoreService"
-	"Amora/internal/core/CoreHandler"
 	"errors"
 	"Amora/internal/user"
+	"golang.org/x/crypto/bcrypt"
 )
 
 
 type UserServiceInit struct {
 	userRepo *userRepository.UserRepositoryInit
-	CoreService *CoreService.CoreServiceInit[*user.Users]
-	CoreHandler *CoreHandler.CoreHandlerInit[*user.Users]
 }
 
 func NewUserServiceInit( userRepo *userRepository.UserRepositoryInit) (*UserServiceInit, error) {
@@ -53,10 +50,36 @@ func (u *UserServiceInit) ForgotPassword(EmailOrPhoneNum string) (string, error)
 	return "Reset link sent to your email/phone", nil
 }
 
-// Login is a placeholder for the logic when the middleware is done 
+// the login needs to check if the email matches a user and the passsword matches that usr too 
 func (u *UserServiceInit) Login(email, password string) (*user.Users, error) {
-	return nil, nil
+	if email == "" || password == "" {
+		Logging.Logs.Errorf("Email or password is empty")
+		return nil, errors.New("email or password cannot be empty")
+	}
+
+	User, err := u.userRepo.GetUserByEmail(email)
+	if err != nil {
+		Logging.Logs.Errorf("Error retrieving user by email %s: %v", email, err)
+		return nil, err
+	}
+
+	if User == nil {
+		Logging.Logs.Warnf("No user found with email %s", email)
+		return nil, errors.New("user not found")
+	}
+
+	// Compare hashed password
+	if err := bcrypt.CompareHashAndPassword([]byte(User.Password), []byte(password)); err != nil {
+		Logging.Logs.Warnf("Incorrect password for user with email %s", email)
+		return nil, errors.New("incorrect password")
+	}
+
+	// (Optional) generate and return a token here
+
+	return User, nil
 }
+
+
 
 
 
