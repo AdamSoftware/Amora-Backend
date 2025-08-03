@@ -101,8 +101,8 @@ func (u *UserServiceInit) ForgotPassword(identifier string) (string, error) {
 
 func (u *UserServiceInit) Login(email, password string) (map[string]interface{}, error) {
 
-	var LockDuration = 3 * time.Minute 
-	var maxAttempts = 1 
+	var LockDuration = 60 * time.Minute 
+	var maxAttempts = 10 
 
 
 	now := time.Now()
