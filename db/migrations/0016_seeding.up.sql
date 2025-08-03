@@ -10,7 +10,7 @@ INSERT INTO plans (plantype, price) VALUES
 -- user2: Bob
 -- user3: Carol
 INSERT INTO users (email, password, FirstName, LastName, phone_number, address, city, state, zip_code, is_active) VALUES
-('alice@example.com', '$2y$12$TUbq9tTZrsV8z..g7yyNmu7hKNgDT0qbWk3fAwZzGbm6PdfDrcTPG', 'Alice', 'Smith', '555-1111', '123 Maple St', 'Springfield', 'IL', '62701', true),
+('AdamSteinberg16@gmail.com', '$2y$12$TUbq9tTZrsV8z..g7yyNmu7hKNgDT0qbWk3fAwZzGbm6PdfDrcTPG', 'Alice', 'Smith', '9204721284', '123 Maple St', 'Springfield', 'IL', '62701', true),
 ('bob@example.com', '$2y$12$pLNvbSltpQFkXkQaiLgm1Oiwgvm0XjM.BMa8EYQVe8NQy6k8t.vmS', 'Bob', 'Jones', '555-2222', '456 Oak St', 'Springfield', 'IL', '62702', true),
 ('carol@example.com', '$2y$12$DEO.IwQTXHa/3kfxl.XGHeg5epQqaZgAXtzxuKMZZT6PzaOejBY5G', 'Carol', 'White', '555-3333', '789 Pine St', 'Springfield', 'IL', '62703', false);
 

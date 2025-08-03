@@ -1,6 +1,7 @@
 package userService
 
 import (
+	"strings"
 	"Amora/internal/Auth"
 	"fmt"
 	"Amora/internal/Logging"
@@ -52,10 +53,48 @@ func (u *UserServiceInit) GetUserByEmail(email string) (*user.Users, error) {
 	return User, nil
 }
 
-// ForgotPassword is a placeholder for the logic when the middleware is done
-func (u *UserServiceInit) ForgotPassword(EmailOrPhoneNum string) (string, error) {
-	return "Reset link sent to your email/phone", nil
+
+func (u *UserServiceInit) ForgotPassword(identifier string) (string, error) {
+	fmt.Println("ForgotPassword called with:", identifier)
+	var user *user.Users
+	var err error
+
+	fmt.Println("ForgotPassword called with:", identifier)
+
+	if strings.Contains(identifier, "@") {
+		fmt.Println("Identifier is an email:", identifier)
+		user, err = u.userRepo.GetUserByEmail(identifier)
+	} else {
+		fmt.Println("Identifier is a phone number:", identifier)
+		user, err = u.userRepo.GetUserByPhoneNumber(identifier)
+	}
+
+	if err != nil || user == nil {
+		return "", errors.New("user not found")
+	}
+
+	resetToken, err := Auth.GenerateResetToken(user)
+
+	if err != nil {
+		Logging.Logs.Errorf("Error generating reset token for user %s: %v", user.Email, err)
+		return "", err
+	}
+
+	fmt.Println("Reset token generated:", resetToken)
+
+	resetLink := fmt.Sprintf("https://example.com/reset-password?token=%s", resetToken)
+
+	if strings.Contains(identifier, "@") {
+		err = helper.SendResetEmail(user.Email, resetLink)
+	} else {
+		fmt.Println("Sending SMS to:", user.PhoneNumber)
+		err = helper.SendResetSMS(user.PhoneNumber, resetLink)
+	}
+
+	return "Password reset link sent successfully", nil
+
 }
+
 
 
 func (u *UserServiceInit) Login(email, password string) (map[string]interface{}, error) {

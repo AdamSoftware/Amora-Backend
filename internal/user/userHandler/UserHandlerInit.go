@@ -1,6 +1,11 @@
 package userHandler
 
 import (
+	"strings"
+	"os"
+	"context"
+	"github.com/golang-jwt/jwt/v5"
+	"fmt"
 	"Amora/internal/core/CoreHandler"
 	"Amora/internal/user"
 	"Amora/internal/user/userService"
@@ -168,21 +173,27 @@ func (u *UserHandlerInit) GetUserByEmail(w http.ResponseWriter, r *http.Request)
 }
 
 func (u *UserHandlerInit) ForgotPassword(w http.ResponseWriter, r *http.Request) {
-	EmailOrPhoneNum := chi.URLParam(r, "emailOrPhoneNum") 
-	if EmailOrPhoneNum == "" {
-		http.Error(w, "Missing email or phone number parameter", http.StatusBadRequest)
+	fmt.Println("ForgotPassword called")
+	idnetifier := chi.URLParam(r, "emailOrPhoneNum")
+	if idnetifier == "" {
+		helper.WriteError(w, http.StatusBadRequest, "Missing identifier parameter")
 		return
 	}
 
-	message, err := u.userService.ForgotPassword(EmailOrPhoneNum)
+	message, err := u.userService.ForgotPassword(idnetifier)
+	fmt.Println("ForgotPassword called with:", idnetifier)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{"message": message})
+	json.NewEncoder(w).Encode(map[string]string{
+		"status":  "success",
+		"message": message,
+	})
 }
+
 
 func (u *UserHandlerInit) Login(w http.ResponseWriter, r *http.Request) {
 	var loginData struct {
@@ -207,6 +218,58 @@ func (u *UserHandlerInit) Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(responseData)
+}
+
+
+func JWTMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader := r.Header.Get("Authorization")
+		if authHeader == "" {
+			helper.WriteError(w, http.StatusUnauthorized, "Missing Authorization header")
+			return
+		}
+
+		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+
+		claims := jwt.MapClaims{}
+		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+			return []byte(os.Getenv("JWT_SECRET_KEY")), nil
+		})
+
+		if err != nil || !token.Valid {
+			helper.WriteError(w, http.StatusUnauthorized, "Invalid or expired token")
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), "user", claims)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+
+func (u *UserHandlerInit) VerifyToken(w http.ResponseWriter, r *http.Request) {
+	authHeader := r.Header.Get("Authorization")
+	if authHeader == "" {
+		helper.WriteError(w, http.StatusUnauthorized, "Missing Authorization header")
+		return
+	}
+
+	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+
+	claims := jwt.MapClaims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("JWT_SECRET_KEY")), nil
+	})
+
+	if err != nil || !token.Valid {
+		helper.WriteError(w, http.StatusUnauthorized, "Invalid or expired token")
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"valid": true,
+		"user":  claims,
+	})
 }
 
 
