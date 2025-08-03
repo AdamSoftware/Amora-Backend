@@ -2,12 +2,18 @@ package userService
 
 import (
 	"Amora/internal/Auth"
+	"fmt"
 	"Amora/internal/Logging"
 	"Amora/internal/user/userRepository"
 	"errors"
 	"Amora/internal/user"
 	"golang.org/x/crypto/bcrypt"
+	"Amora/internal/helper"
+	"time"
 )
+
+
+var loginAttempts = make(map[string]*helper.LoginAttempt)
 
 
 type UserServiceInit struct {
@@ -53,18 +59,47 @@ func (u *UserServiceInit) ForgotPassword(EmailOrPhoneNum string) (string, error)
 
 
 func (u *UserServiceInit) Login(email, password string) (map[string]interface{}, error) {
+
+	var LockDuration = 3 * time.Minute 
+	var maxAttempts = 1 
+
+
+	now := time.Now()
+
+	// checking if the user has exceeded the retry limit for passsword and if the account is locked
+
+	fmt.Println("Checking login attempts", loginAttempts)
+
+	if attempt, exists := loginAttempts[email]; exists {
+		if attempt.Count >= maxAttempts && now.Sub(attempt.LastFailed) < LockDuration {
+			// log it to the db that the account has been locked and what email was locked also the time it was locked
+			fmt.Println("checking attempts for debugging", attempt.Count, maxAttempts, now.Sub(attempt.LastFailed), LockDuration)
+			Logging.Logs.Warnf("Account %s is locked due to too many failed login attempts, AtTime: %q", email, time.Now())
+			return nil, errors.New("account is locked due to too many failed login attempts")
+		}
+	}
+
+
+	
 	if email == "" || password == "" {
 		return nil, errors.New("email or password cannot be empty")
 	}
 
 	User, err := u.userRepo.GetUserByEmail(email)
 	if err != nil || User == nil {
+		// Record the failed login attempt
 		return nil, errors.New("invalid email or password")
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(User.Password), []byte(password)); err != nil {
+		recordLastFailedAttempt(email, loginAttempts)
+		fmt.Println("checking why its not locking me out", loginAttempts)
+		fmt.Println("how many attempts", loginAttempts[email].Count)
 		return nil, errors.New("invalid email or password")
 	}
+
+	// reset the login attempts and reset the last failed time
+	delete(loginAttempts, email)
 
 	// Generate JWT
 	token, err := Auth.GenerateJWT(User)
@@ -72,6 +107,8 @@ func (u *UserServiceInit) Login(email, password string) (map[string]interface{},
 		return nil, err
 	}
 
+	// the thing is saying that I can use any but I don't know wtf that is and don't want to look it up.
+	// fix maybe later
 	return map[string]interface{}{
 		"token": token,
 		"user": map[string]interface{}{
@@ -84,6 +121,21 @@ func (u *UserServiceInit) Login(email, password string) (map[string]interface{},
 	}, nil
 }
 
+func recordLastFailedAttempt(email string, loginAttempts map[string]*helper.LoginAttempt) {
+	attempt, exists := loginAttempts[email]
+	if !exists {
+		attempt = &helper.LoginAttempt{
+			Count: 0,
+			LastFailed: time.Now(),
+		}
+		// logs the attempts with the email
+		loginAttempts[email] = attempt
+	}else {
+		fmt.Println("should be hitting this", email, attempt.Count)
+		attempt.Count++	
+		attempt.LastFailed = time.Now()
+	}
+}
 
 
 

@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"github.com/go-chi/chi/v5"
+	"Amora/internal/helper"
 	"strconv"
 )
 
@@ -27,7 +28,7 @@ func (u *UserHandlerInit) FindById(w http.ResponseWriter, r *http.Request) {
     idStr := chi.URLParam(r, "id") 
     id, err := strconv.Atoi(idStr)
     if err != nil {
-        http.Error(w, "Invalid ID", http.StatusBadRequest)
+			  helper.WriteError(w, http.StatusBadRequest, "Invalid ID parameter")
         return
     }
 
@@ -39,7 +40,7 @@ func (u *UserHandlerInit) FindById(w http.ResponseWriter, r *http.Request) {
     }
 		// error if the user just can't be found
     if entity == nil {
-        http.Error(w, "User not found", http.StatusNotFound)
+			  helper.WriteError(w, http.StatusNotFound, "User not found")
         return
     }
 
@@ -55,7 +56,7 @@ func (u *UserHandlerInit) Get(w http.ResponseWriter, r *http.Request) {
 		}
 		// this would should never happen but just in case
 		if len(entities) == 0 { 
-				http.Error(w, "No users found", http.StatusNotFound)
+				helper.WriteError(w, http.StatusNotFound, "No users found")
 				return
 		}
 
@@ -67,7 +68,7 @@ func (u *UserHandlerInit) Get(w http.ResponseWriter, r *http.Request) {
 func (u *UserHandlerInit) Insert(w http.ResponseWriter, r *http.Request) {
 	var entity *user.Users
 	if err := json.NewDecoder(r.Body).Decode(&entity); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		helper.WriteError(w, http.StatusBadRequest, "Invalid request body")
 		return
 	}
 
@@ -85,7 +86,7 @@ func (u *UserHandlerInit) Insert(w http.ResponseWriter, r *http.Request) {
 func (u *UserHandlerInit) Update(w http.ResponseWriter, r *http.Request) {
 	var entity *user.Users
 	if err := json.NewDecoder(r.Body).Decode(&entity); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		helper.WriteError(w, http.StatusBadRequest, "Invalid request body")
 		return
 	}
 
@@ -103,13 +104,13 @@ func (u *UserHandlerInit) Update(w http.ResponseWriter, r *http.Request) {
 func (u *UserHandlerInit) Delete(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	if idStr == "" {
-		http.Error(w, "Missing ID parameter", http.StatusBadRequest)
+		helper.WriteError(w, http.StatusBadRequest, "Missing ID parameter")
 		return
 	}
 
 	id, err := strconv.Atoi(idStr)
 	if err != nil || id <= 0 {
-		http.Error(w, "Invalid ID parameter", http.StatusBadRequest)
+		helper.WriteError(w, http.StatusBadRequest, "Invalid ID parameter")
 		return
 	}
 
@@ -125,7 +126,7 @@ func (u *UserHandlerInit) Delete(w http.ResponseWriter, r *http.Request) {
 func (u *UserHandlerInit) GetUserByPhoneNumber(w http.ResponseWriter, r *http.Request) {
 	phoneNumber := chi.URLParam(r, "phoneNumber") 
 	if phoneNumber == "" {
-		http.Error(w, "Missing phone number parameter", http.StatusBadRequest)
+		helper.WriteError(w, http.StatusBadRequest, "Missing phone number parameter")
 		return
 	}
 
@@ -136,7 +137,7 @@ func (u *UserHandlerInit) GetUserByPhoneNumber(w http.ResponseWriter, r *http.Re
 	}
 
 	if user == nil {
-		http.Error(w, "User not found", http.StatusNotFound)
+		helper.WriteError(w, http.StatusNotFound, "User not found")
 		return
 	}
 
@@ -147,7 +148,7 @@ func (u *UserHandlerInit) GetUserByPhoneNumber(w http.ResponseWriter, r *http.Re
 func (u *UserHandlerInit) GetUserByEmail(w http.ResponseWriter, r *http.Request) {
 	email := chi.URLParam(r, "email") 
 	if email == "" {
-		http.Error(w, "Missing email parameter", http.StatusBadRequest)
+		helper.WriteError(w, http.StatusBadRequest, "Missing email parameter")
 		return
 	}
 
@@ -158,7 +159,7 @@ func (u *UserHandlerInit) GetUserByEmail(w http.ResponseWriter, r *http.Request)
 	}
 
 	if user == nil {
-		http.Error(w, "User not found", http.StatusNotFound)
+		helper.WriteError(w, http.StatusNotFound, "User not found")
 		return
 	}
 
@@ -198,7 +199,7 @@ func (u *UserHandlerInit) Login(w http.ResponseWriter, r *http.Request) {
 	// Call service layer to login
 	responseData, err := u.userService.Login(loginData.Email, loginData.Password)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+		helper.WriteError(w, http.StatusUnauthorized, err.Error())
 		return
 	}
 
