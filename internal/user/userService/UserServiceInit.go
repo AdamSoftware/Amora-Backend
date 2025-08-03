@@ -54,6 +54,8 @@ func (u *UserServiceInit) GetUserByEmail(email string) (*user.Users, error) {
 }
 
 
+// this doesn't work because the software I don't think are working to send it but it does get everything it needs
+// and generates the reset token and sends it to the user
 func (u *UserServiceInit) ForgotPassword(identifier string) (string, error) {
 	fmt.Println("ForgotPassword called with:", identifier)
 	var user *user.Users

@@ -3,7 +3,6 @@ package userHandler
 import (
 	"strings"
 	"os"
-	"context"
 	"github.com/golang-jwt/jwt/v5"
 	"fmt"
 	"Amora/internal/core/CoreHandler"
@@ -128,6 +127,7 @@ func (u *UserHandlerInit) Delete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+
 func (u *UserHandlerInit) GetUserByPhoneNumber(w http.ResponseWriter, r *http.Request) {
 	phoneNumber := chi.URLParam(r, "phoneNumber") 
 	if phoneNumber == "" {
@@ -172,6 +172,9 @@ func (u *UserHandlerInit) GetUserByEmail(w http.ResponseWriter, r *http.Request)
 	json.NewEncoder(w).Encode(user)
 }
 
+// this doesn't work because the software I don't think are working to send it but it does get everything it needs
+// and generates the reset token and sends it to the user
+// will fully work on this when the frontend is ready to test it
 func (u *UserHandlerInit) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("ForgotPassword called")
 	idnetifier := chi.URLParam(r, "emailOrPhoneNum")
@@ -221,30 +224,7 @@ func (u *UserHandlerInit) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func JWTMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		authHeader := r.Header.Get("Authorization")
-		if authHeader == "" {
-			helper.WriteError(w, http.StatusUnauthorized, "Missing Authorization header")
-			return
-		}
 
-		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
-
-		claims := jwt.MapClaims{}
-		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-			return []byte(os.Getenv("JWT_SECRET_KEY")), nil
-		})
-
-		if err != nil || !token.Valid {
-			helper.WriteError(w, http.StatusUnauthorized, "Invalid or expired token")
-			return
-		}
-
-		ctx := context.WithValue(r.Context(), "user", claims)
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
-}
 
 
 func (u *UserHandlerInit) VerifyToken(w http.ResponseWriter, r *http.Request) {
