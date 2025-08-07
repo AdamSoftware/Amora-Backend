@@ -41,8 +41,8 @@ func (s *SubscriptionRepositoryInit) GetByPlanId(planId int) ([]subscriptions.Su
 }
 
 
-func (s *SubscriptionRepositoryInit) GetByUserId(userId int) (subscriptions.Subscriptions, error) {
-	var subscription subscriptions.Subscriptions
+func (s *SubscriptionRepositoryInit) GetByUserId(userId int) (*subscriptions.Subscriptions, error) {
+	var subscription *subscriptions.Subscriptions
 	err := s.Core.DB.Where("user_id = ?", userId).First(&subscription).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

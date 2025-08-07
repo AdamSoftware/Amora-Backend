@@ -40,7 +40,7 @@ func (s *SubscriptionServiceInit) GetByUserId(userId int) (*subscriptions.Subscr
 		Logging.Logs.Errorf("Error retrieving subscription by user ID %s: %v", userId, err)
 		return nil, err
 	}
-	return &subscription, nil
+	return subscription, nil
 }
 
 func (s *SubscriptionServiceInit) FindByStartDateBefore(date string) ([]subscriptions.Subscriptions, error) {
@@ -86,15 +86,15 @@ func (s *SubscriptionServiceInit) UpdateByUserId(userId int, updatedSubscription
 }
 
 // moding the update so that if you are chanigng the status to cancelled it will also update the cancel date
-func (s *SubscriptionServiceInit) Update(userId int, updatedSubscription subscriptions.Subscriptions) error {
+func (s *SubscriptionServiceInit) Update(Id int, updatedSubscription subscriptions.Subscriptions) error {
 	// If the status is being changed to "cancelled", set the CancelDate to the current date
 	if updatedSubscription.Status == "cancelled" {
 		updatedSubscription.CancelDate = time.Now()
 	}
 
-	err := s.subscriptionRepo.UpdateByUserId(userId, updatedSubscription)
+	err := s.subscriptionRepo.UpdateByUserId(Id, updatedSubscription)
 	if err != nil {
-		Logging.Logs.Errorf("Error updating subscription for user ID %s: %v", userId, err)
+		Logging.Logs.Errorf("Error updating subscription for user ID %s: %v", Id, err)
 		return err
 	}
 	return nil

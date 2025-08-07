@@ -11,7 +11,7 @@ import (
 // use discretion when calling these methods. 
 type SubscriptionRepository interface {
 	GetByPlanId(planId int) ([]subscriptions.Subscriptions, error)
-	GetByUserId(userId int) (subscriptions.Subscriptions, error)
+	GetByUserId(userId int) (*subscriptions.Subscriptions, error)
 	FindByStartDateBefore(date string) ([]subscriptions.Subscriptions, error)
 	GetByStatus(status string) ([]subscriptions.Subscriptions, error)
 	// will check if the user ever had a subscription 
