@@ -18,4 +18,5 @@ type SubscriptionRepository interface {
 	CheckIfUserHadSubscription(userId int) (bool, error)
 	// will update using the user id same as the core update just allowing you to use user id not just Id
 	UpdateByUserId(userId int, updatedSubscription subscriptions.Subscriptions) error
+	GetByPayedStatus(payed bool) ([]subscriptions.Subscriptions, error)
 }

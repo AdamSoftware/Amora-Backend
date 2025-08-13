@@ -88,12 +88,37 @@ func (s *SubscriptionRepositoryInit) CheckIfUserHadSubscription(userId int) (boo
 	return count > 0, nil
 }
 
-// this is for easier updating of the subscirption table on the user id instead of the subscirption id 
-func (s *SubscriptionRepositoryInit) UpdateByUserId(userId int, updatedSubscription subscriptions.Subscriptions) error {
-	err := s.Core.DB.Model(&subscriptions.Subscriptions{}).Where("user_id = ?", userId).Updates(updatedSubscription).Error
+func (s *SubscriptionRepositoryInit) UpdateByUserId(userId int, updatedSubscription *subscriptions.Subscriptions) error {
+	updateMap := map[string]interface{}{
+		"status": updatedSubscription.Status,
+	}
+
+	// Include CancelDate even if nil — this sets it to NULL in DB
+	updateMap["cancelled_at"] = updatedSubscription.CancelDate
+
+	// Optionally include StartDate and NextPaymentDate if needed
+	updateMap["start_date"] = updatedSubscription.StartDate
+	updateMap["next_payment"] = updatedSubscription.NextPaymentDate
+
+	err := s.Core.DB.
+		Model(&subscriptions.Subscriptions{}).
+		Where("user_id = ?", userId).
+		Updates(updateMap).Error
+
 	if err != nil {
 		Logging.Logs.Errorf("Error updating subscription for user ID %d: %v", userId, err)
 		return err
 	}
 	return nil
 }
+
+func (s *SubscriptionRepositoryInit) GetByPayedStatus(payed bool) ([]subscriptions.Subscriptions, error) {
+	var subscriptionsList []subscriptions.Subscriptions
+	err := s.Core.DB.Where("payed = ?", payed).Find(&subscriptionsList).Error
+	if err != nil {
+		Logging.Logs.Errorf("Error retrieving subscriptions by payed status %t: %v", payed, err)
+		return nil, err
+	}
+	return subscriptionsList, nil
+}
+

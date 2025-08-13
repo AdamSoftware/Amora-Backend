@@ -105,7 +105,7 @@ func (u *SubscriptionHandlerInit) Update(w http.ResponseWriter, r *http.Request)
 	defer r.Body.Close()
 
 	// Call service layer
-	err = u.subscriptionService.Update(id, entity)
+	err = u.subscriptionService.Update(id, &entity)
 	if err != nil {
 		helper.WriteError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -281,7 +281,7 @@ func (u *SubscriptionHandlerInit) UpdateByUserId(w http.ResponseWriter, r *http.
 	}
 	defer r.Body.Close()
 
-	err = u.subscriptionService.UpdateByUserId(userId, entity)
+	err = u.subscriptionService.UpdateByUserId(userId, &entity)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

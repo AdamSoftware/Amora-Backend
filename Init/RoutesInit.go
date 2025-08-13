@@ -6,66 +6,81 @@ import (
 	"Amora/internal/core/CoreRepository"
 	"Amora/internal/core/CoreService"
 	"Amora/internal/routes"
+	"Amora/internal/subscriptions/subscriptionRepository"
 	"Amora/internal/user"
 	"Amora/internal/user/userHandler"
-	"Amora/internal/user/userService"
 	"Amora/internal/user/userRepository"
+	"Amora/internal/user/userService"
+	"Amora/internal/subscriptions/subscriptionService"
+	"Amora/internal/subscriptions/subscriptionHandler"
 	"fmt"
 	"net/http"
-	"gorm.io/gorm"
+	"Amora/internal/subscriptions"
 	"github.com/go-chi/chi/v5"
+	"gorm.io/gorm"
 )
 
 
-func UserRoutes(db *gorm.DB) *chi.Mux{
+func initUserModule(db *gorm.DB) (routes.RouteModule, error) {
+	coreRepo := CoreRepository.CoreRepositoryInit[*user.Users]{DB: db}
+	coreService := CoreService.CoreServiceInit[*user.Users]{Repo: &coreRepo}
+	coreHandler := CoreHandler.CoreHandlerInit[*user.Users]{Service: &coreService}
 
-	if db == nil {
-		panic("Database connection is nil")
-	}else {
-		fmt.Println("Database connection is established")
-	}
-
-	fmt.Println("Initializing corerepo...")
-	CoreRepo := CoreRepository.CoreRepositoryInit[*user.Users]{DB: db}
-	fmt.Println("Init coreservice")
-	CoreService := CoreService.CoreServiceInit[*user.Users]{Repo: &CoreRepo}
-	fmt.Println("Init corehandler")
-	coreHandler := CoreHandler.CoreHandlerInit[*user.Users]{Service: &CoreService}
-
-	fmt.Println("Initializing user repository...")
-	userRepo := userRepository.UserRepositoryInit{Core: &CoreRepo} 
-
-	fmt.Println("Initializing user service...")
+	userRepo := userRepository.UserRepositoryInit{Core: &coreRepo}
 	userService, err := userService.NewUserServiceInit(&userRepo)
-
 	if err != nil {
-		Logging.Logs.Errorf("Failed to initialize user service: %v", err)
-		http.Error(nil, fmt.Sprintf("Failed to initialize user service: %v", err), http.StatusInternalServerError)
-		return nil
+		return nil, fmt.Errorf("failed to initialize user service: %w", err)
 	}
-	
-	fmt.Println("Initializing user handler...")
-	userHandler := userHandler.NewUserHandlerInit(&coreHandler, userService)
 
-	fmt.Println("Creating user routes...")
-	return routes.UserRouter(userHandler)
+	handler := userHandler.NewUserHandlerInit(&coreHandler, userService)
+	return routes.NewUserModule(handler), nil
 }
 
+func initSubscriptionModule(db *gorm.DB) (routes.RouteModule, error) {
+	coreRepo := CoreRepository.CoreRepositoryInit[*subscriptions.Subscriptions]{DB: db}
+	coreService := CoreService.CoreServiceInit[*subscriptions.Subscriptions]{Repo: &coreRepo}
+	coreHandler := CoreHandler.CoreHandlerInit[*subscriptions.Subscriptions]{Service: &coreService}
+
+	repo, err := subscriptionRepository.NewSubscriptionRepositoryInit(db)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize subscription repo: %w", err)
+	}
+
+	service, err := subscriptionService.NewsubscriptionServiceInit(repo)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize subscription service: %w", err)
+	}
+
+	handler := subscriptionHandler.NewsubscriptionHandlerInit(&coreHandler, service)
+	return routes.NewSubscriptionModule(handler), nil
+}
 
 func RoutesInit(db *gorm.DB) {
-	router := UserRoutes(db)
+	if db == nil {
+		panic("❌ Database connection is nil")
+	}
+	fmt.Println("✅ Database connected")
 
-	if router == nil {
-		Logging.Logs.Error("Failed to initialize user routes")
-		return
+	router := chi.NewRouter()
+
+	modules := []func(*gorm.DB) (routes.RouteModule, error){
+		initUserModule,
+		initSubscriptionModule,
 	}
 
-	fmt.Println("User routes initialized successfully")
-	fmt.Println("starting the server on port 8080")
+	for _, initFn := range modules {
+		module, err := initFn(db)
+		if err != nil {
+			Logging.Logs.Errorf("❌ Failed to initialize module: %v", err)
+			continue
+		}
+		fmt.Printf("✅ Mounted: %s\n", module.Prefix())
+		router.Mount(module.Prefix(), module.Router())
+	}
 
+	fmt.Println("🚀 Server starting on port 8080")
 	if err := http.ListenAndServe(":8080", router); err != nil {
-		Logging.Logs.Errorf("Failed to start server: %v", err)
-		fmt.Printf("Failed to start server: %v\n", err)
-		return
+		Logging.Logs.Errorf("❌ Server failed to start: %v", err)
 	}
 }
+

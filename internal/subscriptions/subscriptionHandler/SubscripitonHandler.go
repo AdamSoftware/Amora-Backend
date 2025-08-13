@@ -17,5 +17,7 @@ type SubscriptionHandler interface {
 	GetByStatus(w http.ResponseWriter, r *http.Request)
 	CheckIfUserHadSubscription(w http.ResponseWriter, r *http.Request)
 	UpdateByUserId(w http.ResponseWriter, r *http.Request)
+	GetByPayedStatus(w http.ResponseWriter, r *http.Request)
+	CheckSubscriptionWebhook(w http.ResponseWriter, r *http.Request)
 }
 
