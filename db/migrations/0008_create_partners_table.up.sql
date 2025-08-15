@@ -6,5 +6,6 @@ CREATE TABLE IF NOT EXISTS partners (
     -- this is for the birthdate of the partner so that we can setup this event automaticlly for flowers and things
     birthdate DATE NOT NULL,
     phone_number TEXT NOT NULL
+    user_id INT UNIQUE REFERENCES users(id)
 );
 

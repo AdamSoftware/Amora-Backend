@@ -15,7 +15,7 @@ INSERT INTO users (email, password, FirstName, LastName, phone_number, address, 
 ('carol@example.com', '$2y$12$DEO.IwQTXHa/3kfxl.XGHeg5epQqaZgAXtzxuKMZZT6PzaOejBY5G', 'Carol', 'White', '555-3333', '789 Pine St', 'Springfield', 'IL', '62703', false);
 
 -- Seed gifts
-INSERT INTO gifts (name, description, image_url, price, is_active) VALUES
+INSERT INTO gifts (name, description, image_url, price, is_active) VALUESpartner
 ('Chocolate Box', 'Assorted fine chocolates', 'https://example.com/chocolate.jpg', 25.00, true),
 ('Flower Bouquet', 'Fresh seasonal flowers', 'https://example.com/flowers.jpg', 45.00, true),
 ('Wine Bottle', 'Premium red wine', 'https://example.com/wine.jpg', 55.00, false);
@@ -42,9 +42,9 @@ INSERT INTO resteruatelist (name, description, address, city, state, zip_code, i
 ('Sushi World', 'Fresh sushi and sashimi', '456 Fish Rd', 'Springfield', 'IL', '62707', 'https://example.com/sushi.jpg', 'http://sushiworld.com', true);
 
 -- Seed partners
-INSERT INTO partners (firstname, lastname, nickname, birthdate, phone_number) VALUES
-('John', 'Doe', 'JD', '1980-01-15', '555-8888'),
-('Jane', 'Smith', NULL, '1990-06-30', '555-9999');
+INSERT INTO partners (firstname, lastname, nickname, birthdate, phone_number, user_id) VALUES
+('John', 'Doe', 'JD', '1980-01-15', '555-8888', 1),
+('Jane', 'Smith', NULL, '1990-06-30', '555-9999', 2);
 
 -- Seed messages
 INSERT INTO messages (partner_id, content, status, sent_at, created_at, updated_at) VALUES
