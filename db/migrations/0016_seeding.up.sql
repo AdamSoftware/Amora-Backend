@@ -52,9 +52,11 @@ INSERT INTO messages (partner_id, content, status, sent_at, created_at, updated_
 (2, 'Your reservation is confirmed.', 'pending', NULL, NOW(), NOW());
 
 -- Seed subscriptions
-INSERT INTO subscriptions (user_id, plan_id, status, start_date, next_payment, cancelled_at) VALUES
-(1, 2, 'active', '2025-01-01 00:00:00+00', '2025-02-01 00:00:00+00', NULL),
-(2, 1, 'inactive', '2024-06-15 00:00:00+00', '2024-07-15 00:00:00+00', '2024-07-01 00:00:00+00');
+INSERT INTO subscriptions (user_id, plan_id, status, start_date, next_payment, cancelled_at, payed) VALUES
+(1, 2, 'active', '2025-01-01 00:00:00+00', '2025-02-01 00:00:00+00', NULL, true),
+(2, 3, 'cancelled', null, null, '2024-07-15 00:00:00+00', false),
+(2, 1, 'past_due', '2024-06-15 00:00:00+00', '2024-07-15 00:00:00+00', '2024-07-01 00:00:00+00', true);
+
 
 -- Seed attachedgifts
 INSERT INTO attachedgifts (event_id, gift_id, quantity, is_active) VALUES
