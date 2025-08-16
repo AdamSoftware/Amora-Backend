@@ -41,8 +41,8 @@ func (p *PartnerRepositoryInit) FindByPhoneNumber(phoneNumber string) (*partner.
 }
 
 
-func (p *PartnerRepositoryInit) FindByUserId(userId int) (*partner.Partners, error) {
-	var partner partner.Partners
+func (p *PartnerRepositoryInit) FindByUserId(userId int) ([]partner.Partners, error) {
+	var partner []partner.Partners
 	err := p.Core.DB.Where("user_id = ?", userId).First(&partner).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -51,5 +51,5 @@ func (p *PartnerRepositoryInit) FindByUserId(userId int) (*partner.Partners, err
 		Logging.Logs.Errorf("Error retrieving partner by user ID %d: %v", userId, err)
 		return nil, err
 	}
-	return &partner, nil
+	return partner, nil
 }
