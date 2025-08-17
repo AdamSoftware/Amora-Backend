@@ -21,10 +21,10 @@ INSERT INTO gifts (name, description, image_url, price, is_active) VALUES
 ('Wine Bottle', 'Premium red wine', 'https://example.com/wine.jpg', 55.00, false);
 
 -- Seed events
-INSERT INTO events (name, description, DateOfTheEvent, is_active) VALUES
-('Spring Gala', 'Annual spring fundraising gala', '2025-04-25', true),
-('Summer Festival', 'Outdoor music and food festival', '2025-07-10', true),
-('Winter Ball', 'Formal winter dance event', '2025-12-15', false);
+INSERT INTO events (name, description, DateOfTheEvent, is_active, user_id) VALUES
+('Spring Gala', 'Annual spring fundraising gala', '2025-04-25', true, 1),
+('Summer Festival', 'Outdoor music and food festival', '2025-07-10', true, 1),
+('Winter Ball', 'Formal winter dance event', '2025-12-15', false, 2);
 
 -- Seed venueslist
 INSERT INTO venueslist (name, address, city, state, zip_code, phone_number, email, website, image_url, is_active) VALUES
