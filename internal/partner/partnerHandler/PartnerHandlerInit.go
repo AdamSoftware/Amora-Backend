@@ -138,7 +138,7 @@ func (u *PartnerHandlerInit) FindByPhoneNumber(w http.ResponseWriter, r *http.Re
 	}
 
 	if user == nil {
-		helper.WriteError(w, http.StatusNotFound, "User not found")
+		helper.WriteError(w, http.StatusNotFound, "Partner with that phone number was not found")
 		return
 	}
 
@@ -167,7 +167,7 @@ func (u *PartnerHandlerInit) FindByUserId(w http.ResponseWriter, r *http.Request
 	}
 
 	if entity == nil {
-		helper.WriteError(w, http.StatusNotFound, "Partner not found")
+		helper.WriteError(w, http.StatusNotFound, "No partners where found for this user")
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")	

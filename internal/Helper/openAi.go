@@ -1,13 +1,15 @@
 package helper
 
 import (
+	"Amora/internal/Logging"
+	"context"
+	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
-	"fmt"
-	"context"
+
 	openai "github.com/sashabaranov/go-openai"
-	"Amora/internal/Logging"
 )
 
 // I need a struct to hold the message so that it can be spit out by the API to the user
@@ -55,14 +57,27 @@ func SendOpenAiMessage(
      nickname = "no nickname"
    }
 
+
 	prompt := fmt.Sprintf(
-		"Hello, I want you to play a character: you are this person's loved one, you are in a relationship with them. Do not break character under any circumstances. Here is this person's name: %s and this is their nickname (if any): %s. I also want to tell you that this is either going to be for an anniversary or a birthday, so please keep that in mind when you write the message. I want you to write a message to them, it can be a poem, a song, or just a message, but it has to be heartfelt and meaningful. I want you to write it as if you were writing it yourself, so please use your own words and style. Do not use any generic phrases or cliches, I want this to be unique and special for them. Do remember that this is a text message so don't make it too long — maybe a sentence or two or just a poem for them and make sure to include their name and nickname if they have one. Also, please make sure to include the fact that it is either a birthday or an anniversary in the message. Here is the information you need: Name: %s, Nickname: %s, Is Birthday: %t",
-		partnerName,
-		nickname,
-		partnerName,
-		nickname,
+		"You're this person's significant other. Today is either their birthday (IsBirthday: %t) or anniversary. You're texting them a short, flirty, and heartfelt message. Do NOT break character. Their name is %s and their nickname is %s (if it's empty, ignore it).\n\n" +
+		"Instructions:\n" +
+		"- Message must be max 4 sentences.\n" +
+		"- Keep it casual, unique, flirty, and human — like a real text message.\n" +
+		"- Use emojis naturally.\n" +
+		"- If it's their birthday, wish them a happy birthday. If it's an anniversary, do not mention birthday — just celebrate the anniversary.\n" +
+		"- Use the nickname naturally if it exists (don’t mention the word 'nickname').\n" +
+		"- You may write a short poem if it fits, but keep it short.\n" +
+		"- Do not use generic phrases or greetings — be creative.\n" +
+		"- Do not mention AI, programming, or use any formatting like \\n.\n" +
+		"- Avoid gender-specific language for example nothing say guy,girl,he him, she her.\n" +
+		"- End with something like 'can't wait to see you soon' or something cute or flirty.\n" +
+		"- you can be a little bit spicy but just don't go too explicit.\n" +
+		"- remember you are human so you can use some slang words, and emojis",
 		isBirthday,
+		partnerName,
+		nickname,
 	)
+
 
 
    ctx := context.Background()
@@ -90,7 +105,8 @@ func SendOpenAiMessage(
    return nil, fmt.Errorf("no response from OpenAI")
   }
 
-  return &OpenAiMessage{Message: resp.Choices[0].Message.Content}, nil
+	cleanMessage := strings.ReplaceAll(resp.Choices[0].Message.Content, "\n", " ")
+	return &OpenAiMessage{Message: cleanMessage}, nil
 }
 
 
