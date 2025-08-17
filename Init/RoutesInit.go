@@ -18,6 +18,10 @@ import (
 	"Amora/internal/subscriptions"
 	"github.com/go-chi/chi/v5"
 	"gorm.io/gorm"
+	"Amora/internal/partner"
+	"Amora/internal/partner/partnerHandler"
+	"Amora/internal/partner/partnerService"
+	"Amora/internal/partner/partnerRepository"
 )
 
 
@@ -55,6 +59,28 @@ func initSubscriptionModule(db *gorm.DB) (routes.RouteModule, error) {
 	return routes.NewSubscriptionModule(handler), nil
 }
 
+func initPartnerModule(db *gorm.DB) (routes.RouteModule, error) {
+	coreRepo := CoreRepository.CoreRepositoryInit[*partner.Partners]{DB: db}
+	coreService := CoreService.CoreServiceInit[*partner.Partners]{Repo: &coreRepo}
+	coreHandler := CoreHandler.CoreHandlerInit[*partner.Partners]{Service: &coreService}
+
+	repo, err := partnerRepository.NewPartnerRepositoryInit(db)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize partner repo: %w", err)
+	}
+
+	service, err := partnerService.NewPartnerServiceInit(repo)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize partner service: %w", err)
+	}
+
+	handler := partnerHandler.NewpartnerHandlerInit(&coreHandler, service)
+	return routes.NewpartnerModule(handler), nil
+
+}
+
+
+
 func RoutesInit(db *gorm.DB) {
 	if db == nil {
 		panic("❌ Database connection is nil")
@@ -66,6 +92,7 @@ func RoutesInit(db *gorm.DB) {
 	modules := []func(*gorm.DB) (routes.RouteModule, error){
 		initUserModule,
 		initSubscriptionModule,
+		initPartnerModule,
 	}
 
 	for _, initFn := range modules {

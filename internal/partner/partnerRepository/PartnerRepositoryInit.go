@@ -1,6 +1,7 @@
 package partnerRepository
 
 import (
+	"time"
 	"Amora/internal/Logging"
 	"Amora/internal/core/CoreRepository"
 	"Amora/internal/partner"
@@ -13,7 +14,7 @@ type PartnerRepositoryInit struct {
 	Core *CoreRepository.CoreRepositoryInit[*partner.Partners]	
 }
 
-func NewuserRepositoryInit(DB *gorm.DB) (*PartnerRepositoryInit, error) {
+func NewPartnerRepositoryInit(DB *gorm.DB) (*PartnerRepositoryInit, error) {
 	if DB == nil {
 		Logging.Logs.Warnf("Database connection is nil")
 	}
@@ -54,3 +55,46 @@ func (p *PartnerRepositoryInit) FindByUserId(userId int) ([]partner.Partners, er
 	}
 	return partner, nil
 }
+
+
+// FindAllPartnersWith Birthday will give a list back of all partners that have a birthday on the given date
+// this will only look at the month and day to check
+func (p *PartnerRepositoryInit) FindAllPartnersWithBirthday() ([]partner.Partners, error) {
+	var partners []partner.Partners
+
+	today := time.Now()
+	month := int(today.Month())
+	day := today.Day()
+
+	err := p.Core.DB.
+		Where("EXTRACT(MONTH FROM birthdate) = ? AND EXTRACT(DAY FROM birthdate) = ?", month, day).
+		Find(&partners).Error
+
+	if err != nil {
+		Logging.Logs.Errorf("Error retrieving partners with birthday on %02d-%02d: %v", month, day, err)
+		return nil, err
+	}
+
+	return partners, nil
+}
+
+// FindAllPartnersWithAnniversary will give a list back of all partners that have an anniversary on the given date
+func (p *PartnerRepositoryInit) FindAllPartnersWithAnniversary() ([]partner.Partners, error) {
+	var partners []partner.Partners
+
+	today := time.Now()
+	month := int(today.Month())
+	day := today.Day()
+
+	err := p.Core.DB.
+		Where("EXTRACT(MONTH FROM anniversary) = ? AND EXTRACT(DAY FROM anniversary) = ?", month, day).
+		Find(&partners).Error
+
+	if err != nil {
+		Logging.Logs.Errorf("Error retrieving partners with anniversary on %02d-%02d: %v", month, day, err)
+		return nil, err
+	}
+
+	return partners, nil
+}
+

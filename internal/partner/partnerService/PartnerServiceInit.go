@@ -41,3 +41,22 @@ func (p *PartnerServiceInit) FindByUserId(userId int) ([]partner.Partners, error
 	}
 	return Partners, nil
 }
+
+
+func (p *PartnerServiceInit) FindAllPartnersWithBirthday() ([]partner.Partners, error) {
+	partners, err := p.partnerRepo.FindAllPartnersWithBirthday()
+	if err != nil {
+		Logging.Logs.Errorf("Error retrieving partners with birthday: %v", err)
+		return nil, err
+	}
+	return partners, nil
+}
+
+func (p *PartnerServiceInit) FindAllPartnersWithAnniversary() ([]partner.Partners, error) {
+	partners, err := p.partnerRepo.FindAllPartnersWithAnniversary()
+	if err != nil {
+		Logging.Logs.Errorf("Error retrieving partners with anniversary: %v", err)
+		return nil, err
+	}
+	return partners, nil
+}
