@@ -187,9 +187,6 @@ func (u *PartnerHandlerInit) FindAllPartnersWithBirthday(w http.ResponseWriter, 
 		return
 	}
 
-	// this is where we would setup the message to be sent to the partner in text message
-	// using the LLM like OpenAI or something else
-
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(partners)
 }

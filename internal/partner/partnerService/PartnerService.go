@@ -11,6 +11,7 @@ type PartnerService interface {
 	// will find all the partners that have a birthday on the givin date
 	FindAllPartnersWithBirthday() ([]partner.Partners, error)
 	FindAllPartnersWithAnniversary() ([]partner.Partners, error)
+
 }
 
 
