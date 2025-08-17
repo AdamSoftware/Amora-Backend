@@ -22,6 +22,10 @@ import (
 	"Amora/internal/partner/partnerHandler"
 	"Amora/internal/partner/partnerService"
 	"Amora/internal/partner/partnerRepository"
+	"Amora/internal/events"
+	"Amora/internal/events/eventService"
+	"Amora/internal/events/eventHandler"
+	"Amora/internal/events/eventRepository"
 )
 
 
@@ -79,6 +83,26 @@ func initPartnerModule(db *gorm.DB) (routes.RouteModule, error) {
 
 }
 
+func initEventModule(db *gorm.DB) (routes.RouteModule, error) {
+	coreRepo := CoreRepository.CoreRepositoryInit[*events.Events]{DB: db}
+	coreService := CoreService.CoreServiceInit[*events.Events]{Repo: &coreRepo}
+	coreHandler := CoreHandler.CoreHandlerInit[*events.Events]{Service: &coreService}
+
+	repo, err := eventRepository.NewEventRepositoryInit(db)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize event repo: %w", err)
+	}
+
+	service, err := eventService.NewEventServiceInit(repo)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize event service: %w", err)
+	}
+
+	handler := eventHandler.NewEventHandlerInit(&coreHandler, service)
+	return routes.NeweventsModule(handler), nil
+
+}
+
 
 
 func RoutesInit(db *gorm.DB) {
@@ -93,6 +117,7 @@ func RoutesInit(db *gorm.DB) {
 		initUserModule,
 		initSubscriptionModule,
 		initPartnerModule,
+		initEventModule,
 	}
 
 	for _, initFn := range modules {

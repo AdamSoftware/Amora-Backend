@@ -1,12 +1,16 @@
 package events
 
+import (
+	"time"
+)
+
 type Events struct {
 	Id          int    `gorm:"primaryKey;column:id"`
 	Name        string `gorm:"column:name"`
 	Description string `gorm:"column:description"`
-	DateOfEvent        string `gorm:"column:DateOfTheEvent"`
+	DateOfEvent        time.Time `gorm:"column:DateOfTheEvent"`
 	IsActive    bool   `gorm:"column:is_active"`
-	EventId      int    `gorm:"column:user_id"`
+	UserId      int    `gorm:"column:user_id"`
 }
 
 

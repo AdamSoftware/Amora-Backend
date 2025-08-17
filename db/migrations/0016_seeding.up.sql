@@ -18,13 +18,13 @@ INSERT INTO users (email, password, FirstName, LastName, phone_number, address, 
 INSERT INTO gifts (name, description, image_url, price, is_active) VALUES
 ('Chocolate Box', 'Assorted fine chocolates', 'https://example.com/chocolate.jpg', 25.00, true),
 ('Flower Bouquet', 'Fresh seasonal flowers', 'https://example.com/flowers.jpg', 45.00, true),
-('Wine Bottle', 'Premium red wine', 'https://example.com/wine.jpg', 55.00, false);
+('Wine Bottle', 'Premium red wine', 'https://example.com/wine.jpg', 55.00, true);
 
 -- Seed events
 INSERT INTO events (name, description, DateOfTheEvent, is_active, user_id) VALUES
 ('Spring Gala', 'Annual spring fundraising gala', '2025-04-25', true, 1),
 ('Summer Festival', 'Outdoor music and food festival', '2025-07-10', true, 1),
-('Winter Ball', 'Formal winter dance event', '2025-12-15', false, 2);
+('Winter Ball', 'Formal winter dance event', '2025-12-15', true, 2);
 
 -- Seed venueslist
 INSERT INTO venueslist (name, address, city, state, zip_code, phone_number, email, website, image_url, is_active) VALUES
@@ -61,7 +61,8 @@ INSERT INTO subscriptions (user_id, plan_id, status, start_date, next_payment, c
 -- Seed attachedgifts
 INSERT INTO attachedgifts (event_id, gift_id, quantity, is_active) VALUES
 (1, 1, 10, true),
-(2, 2, 5, true);
+(2, 2, 5, true),
+(3, 3, 2, true);
 
 -- Seed reservations
 INSERT INTO reservations (
