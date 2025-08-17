@@ -42,9 +42,9 @@ INSERT INTO resteruatelist (name, description, address, city, state, zip_code, i
 ('Sushi World', 'Fresh sushi and sashimi', '456 Fish Rd', 'Springfield', 'IL', '62707', 'https://example.com/sushi.jpg', 'http://sushiworld.com', true);
 
 -- Seed partners
-INSERT INTO partners (firstname, lastname, nickname, birthdate, phone_number) VALUES
-('John', 'Doe', 'JD', '1980-01-15', '555-8888'),
-('Jane', 'Smith', NULL, '1990-06-30', '555-9999');
+INSERT INTO partners (firstname, lastname, nickname, birthdate, phone_number, user_id, anniversary) VALUES
+('John', 'Doe', 'JD', '1980-08-17', '555-8888', 1, '2005-08-17'),
+('Jane', 'Smith', NULL, '1990-08-17', '555-9999', 2, '2015-08-17');
 
 -- Seed messages
 INSERT INTO messages (partner_id, content, status, sent_at, created_at, updated_at) VALUES

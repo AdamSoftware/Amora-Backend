@@ -7,10 +7,12 @@ import (
 )
 
 func main() {
-	migration.Migrations(true);
+	migration.Migrations(false);
 	db := Init.DBinit()
 	Logging.InitLogger(db)
+	Init.InitOpenAi()
 	Init.RoutesInit(db)
 }
+
 
 
