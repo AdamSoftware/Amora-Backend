@@ -10,6 +10,7 @@ func main() {
 	migration.Migrations(true);
 	db := Init.DBinit()
 	Logging.InitLogger(db)
+	Init.InitOpenAi()
 	Init.RoutesInit(db)
 }
 
