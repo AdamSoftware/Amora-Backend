@@ -67,6 +67,9 @@ func (p *PartnerServiceInit) FindAllPartnersWithBirthday() ([]helper.PartnerMess
 			continue // just skip the one that errored
 		}
 
+		// NOTE:will added the method to send the message to the partner using the phone number as the reseving phone number
+		// and then the sender will be the user phone number
+
 		messages = append(messages, helper.PartnerMessage{
 			PartnerId:    partner.Id,
 			PartnerName:  partner.Firstname,
@@ -100,6 +103,9 @@ func (p *PartnerServiceInit) FindAllPartnersWithAnniversary() ([]helper.PartnerM
 			Logging.Logs.Errorf("Error generating message from OpenAI for partner ID %d: %v", partner.Id, err)
 			continue // just skip the one that errored
 		}
+
+		// NOTE:will added the method to send the message to the partner using the phone number as the reseving phone number
+		// and then the sender will be the user phone number
 
 		messages = append(messages, helper.PartnerMessage{
 			PartnerId:    partner.Id,
