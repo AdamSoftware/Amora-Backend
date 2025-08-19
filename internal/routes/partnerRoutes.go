@@ -21,8 +21,8 @@ func (m *partnerModule) Prefix() string {
 func (m *partnerModule) Router() *chi.Mux {
 	r := chi.NewRouter()
 	// public routes
-	r.Get("/birthday", m.handler.FindAllPartnersWithBirthday)
-	r.Get("/anniversary", m.handler.FindAllPartnersWithAnniversary)
+	r.Get("/birthday/{SpicyContent}", m.handler.FindAllPartnersWithBirthday)
+	r.Get("/anniversary/{SpicyContent}", m.handler.FindAllPartnersWithAnniversary)
 
 	r.Group(func(protected chi.Router) {
 		protected.Use(Auth.JWTMiddleware)

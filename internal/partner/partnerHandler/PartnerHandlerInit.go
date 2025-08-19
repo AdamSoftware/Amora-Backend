@@ -176,7 +176,15 @@ func (u *PartnerHandlerInit) FindByUserId(w http.ResponseWriter, r *http.Request
 
 
 func (u *PartnerHandlerInit) FindAllPartnersWithBirthday(w http.ResponseWriter, r *http.Request) {
-	partners, err := u.partnerService.FindAllPartnersWithBirthday()
+	SpicyContentstr := chi.URLParam(r, "SpicyContent")
+	SpicyContent, err := strconv.Atoi(SpicyContentstr)
+
+	if SpicyContent > 2 || SpicyContent < 0 {
+		helper.WriteError(w, http.StatusBadRequest, "SpicyContent must be 0, 1 or 2")
+		return
+	}
+
+	partners, err := u.partnerService.FindAllPartnersWithBirthday(SpicyContent)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -192,7 +200,9 @@ func (u *PartnerHandlerInit) FindAllPartnersWithBirthday(w http.ResponseWriter, 
 }
 
 func (u *PartnerHandlerInit) FindAllPartnersWithAnniversary(w http.ResponseWriter, r *http.Request) {
-	partners, err := u.partnerService.FindAllPartnersWithAnniversary()
+	SpicyContentstr := chi.URLParam(r, "SpicyContent")
+	SpicyContent, err := strconv.Atoi(SpicyContentstr)
+	partners, err := u.partnerService.FindAllPartnersWithAnniversary(SpicyContent)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -8,4 +8,6 @@ type PartnerMessage struct {
 	PhoneNumber string `json:"phone_number"`
 	UserId int `json:"user_id"`	
 	Message string `json:"message"`
+	// this is to test the spicy content level
+	SpicyContent int `json:"spicy_content"`
 }

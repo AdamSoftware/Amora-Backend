@@ -44,7 +44,7 @@ func (p *PartnerServiceInit) FindByUserId(userId int) ([]partner.Partners, error
 }
 
 
-func (p *PartnerServiceInit) FindAllPartnersWithBirthday() ([]helper.PartnerMessage, error) {
+func (p *PartnerServiceInit) FindAllPartnersWithBirthday(SpicyContent int) ([]helper.PartnerMessage, error) {
 	partners, err := p.partnerRepo.FindAllPartnersWithBirthday()
 	if err != nil {
 		Logging.Logs.Errorf("Error retrieving partners with birthday: %v", err)
@@ -61,7 +61,7 @@ func (p *PartnerServiceInit) FindAllPartnersWithBirthday() ([]helper.PartnerMess
 	var messages []helper.PartnerMessage
 
 	for _, partner := range partners {
-		response, err := helper.SendOpenAiMessage(client, partner.Firstname, partner.Nickname, true)
+		response, err := helper.SendOpenAiMessage(client, partner.Firstname, partner.Nickname, true, SpicyContent)
 		if err != nil {
 			Logging.Logs.Errorf("Error generating message from OpenAI for partner ID %d: %v", partner.Id, err)
 			continue // just skip the one that errored
@@ -77,13 +77,14 @@ func (p *PartnerServiceInit) FindAllPartnersWithBirthday() ([]helper.PartnerMess
 			PhoneNumber:  partner.Phonenumber,
 			UserId:      	partner.User_id,
 			Message:      response.Message,
+			SpicyContent: SpicyContent,
 		})
 	}
 
 	return messages, nil
 }
 
-func (p *PartnerServiceInit) FindAllPartnersWithAnniversary() ([]helper.PartnerMessage, error){ 
+func (p *PartnerServiceInit) FindAllPartnersWithAnniversary(SpicyContent int) ([]helper.PartnerMessage, error){ 
 	partners, err := p.partnerRepo.FindAllPartnersWithAnniversary()
 	if err != nil {
 		Logging.Logs.Errorf("Error retrieving partners with anniversary: %v", err)
@@ -98,7 +99,7 @@ func (p *PartnerServiceInit) FindAllPartnersWithAnniversary() ([]helper.PartnerM
 
 	var messages []helper.PartnerMessage
 	for _, partner := range partners {
-		response, err := helper.SendOpenAiMessage(client, partner.Firstname, partner.Nickname, false)
+		response, err := helper.SendOpenAiMessage(client, partner.Firstname, partner.Nickname, false, SpicyContent)
 		if err != nil {
 			Logging.Logs.Errorf("Error generating message from OpenAI for partner ID %d: %v", partner.Id, err)
 			continue // just skip the one that errored
@@ -114,6 +115,7 @@ func (p *PartnerServiceInit) FindAllPartnersWithAnniversary() ([]helper.PartnerM
 			Nickname:     partner.Nickname,
 			UserId:      	partner.User_id,
 			Message:      response.Message,
+			SpicyContent: SpicyContent,
 		})
 	}
 	return messages, nil
