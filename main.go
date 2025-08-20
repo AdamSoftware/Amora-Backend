@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	migration.Migrations(false);
+	migration.Migrations(true);
 	db := Init.DBinit()
 	Logging.InitLogger(db)
 	Init.InitOpenAi()
