@@ -202,6 +202,17 @@ func (u *PartnerHandlerInit) FindAllPartnersWithBirthday(w http.ResponseWriter, 
 func (u *PartnerHandlerInit) FindAllPartnersWithAnniversary(w http.ResponseWriter, r *http.Request) {
 	SpicyContentstr := chi.URLParam(r, "SpicyContent")
 	SpicyContent, err := strconv.Atoi(SpicyContentstr)
+
+	if err != nil {
+		helper.WriteError(w, http.StatusBadRequest, "Spicy level must be a valid integer")
+		return
+	}
+
+	if SpicyContent > 2 || SpicyContent < 0 {
+		helper.WriteError(w, http.StatusBadRequest, "SpicyContent must be 0, 1 or 2")
+		return
+	}
+
 	partners, err := u.partnerService.FindAllPartnersWithAnniversary(SpicyContent)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
