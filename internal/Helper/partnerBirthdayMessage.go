@@ -9,5 +9,5 @@ type PartnerMessage struct {
 	UserId int `json:"user_id"`	
 	Message string `json:"message"`
 	// this is to test the spicy content level
-	SpicyContent int `json:"spicy_content"`
+	//SpicyContent int `json:"spicy_content"`
 }

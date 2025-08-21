@@ -61,6 +61,9 @@ INSERT INTO subscriptions (user_id, plan_id, status, start_date, next_payment, c
 -- Seed attachedgifts
 INSERT INTO attachedgifts (event_id, gift_id, quantity, is_active) VALUES
 (1, 1, 10, true),
+(1, 2, 5, true),
+(2, 3, 3, true),
+(1, 3, 2, false),
 (2, 2, 5, true),
 (3, 3, 2, true);
 

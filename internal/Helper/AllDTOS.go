@@ -6,7 +6,6 @@ type GiftDTO struct {
 	Description string `json:"description"`
 	ImageURL    string `json:"image_url"`
 	Price       float64 `json:"price"`
-	Quantity    int    `json:"quantity"`
 }
 
 type EventWithGiftsDTO struct {
@@ -15,6 +14,15 @@ type EventWithGiftsDTO struct {
 	Description		string     `json:"description"`
 	DateOfTheEvent	string     `json:"date_of_the_event"`
 	Gifts				[]GiftDTO `json:"gifts"`
+}
+
+type AttachedGiftsWithGiftsDTO struct {
+	Id          int        `json:"id"`
+	EventId     int        `json:"event_id"`
+	GiftId      int        `json:"gift_id"`
+	Quantity    int        `json:"quantity"`
+	IsActive    bool       `json:"is_active"`
+	GiftDetails []GiftDTO `json:"gift_details"`
 }
 
 type EventWithReservationsDTO struct {

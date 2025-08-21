@@ -77,7 +77,6 @@ func (p *PartnerServiceInit) FindAllPartnersWithBirthday(SpicyContent int) ([]he
 			PhoneNumber:  partner.Phonenumber,
 			UserId:      	partner.User_id,
 			Message:      response.Message,
-			SpicyContent: SpicyContent,
 		})
 	}
 
@@ -115,7 +114,6 @@ func (p *PartnerServiceInit) FindAllPartnersWithAnniversary(SpicyContent int) ([
 			Nickname:     partner.Nickname,
 			UserId:      	partner.User_id,
 			Message:      response.Message,
-			SpicyContent: SpicyContent,
 		})
 	}
 	return messages, nil
