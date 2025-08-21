@@ -64,7 +64,6 @@ func (e *EventRepositoryInit) GetEventsWithGiftsByUserID(userID int) ([]helper.E
 		GiftDescription      string
 		ImageURL      string
 		Price         float64
-		Quantity      int
 	}
 
 	err := e.Core.DB.Raw(`
@@ -78,9 +77,7 @@ func (e *EventRepositoryInit) GetEventsWithGiftsByUserID(userID int) ([]helper.E
 			g.description AS gift_description,
 			g.image_url,
 			g.price,
-			ag.quantity
 		FROM events e
-		JOIN attachedgifts ag ON e.id = ag.event_id
 		JOIN gifts g ON ag.gift_id = g.id
 		WHERE e.user_id = ? AND e.is_active = true AND g.is_active = true
 	`, userID).Scan(&rows).Error
@@ -107,7 +104,6 @@ func (e *EventRepositoryInit) GetEventsWithGiftsByUserID(userID int) ([]helper.E
 			Description: row.GiftDescription,
 			ImageURL:    row.ImageURL,
 			Price:       row.Price,
-			Quantity:    row.Quantity,
 		})
 	}
 

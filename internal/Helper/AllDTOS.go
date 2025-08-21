@@ -6,7 +6,6 @@ type GiftDTO struct {
 	Description string `json:"description"`
 	ImageURL    string `json:"image_url"`
 	Price       float64 `json:"price"`
-	Quantity    int    `json:"quantity"`
 }
 
 type EventWithGiftsDTO struct {

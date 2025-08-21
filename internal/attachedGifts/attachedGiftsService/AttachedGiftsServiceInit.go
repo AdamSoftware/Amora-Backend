@@ -1,9 +1,9 @@
 package attachedGiftsService
 
 import ( 
-	"Amora/internal/attachedgifts"
+	"Amora/internal/attachedGifts"
 	"Amora/internal/helper"
-	"Amora/internal/attachedgifts/attachedGiftsRepository"
+	"Amora/internal/attachedGifts/attachedGiftsRepository"
 	"Amora/internal/Logging"
 	"fmt"
 	"errors"
@@ -25,7 +25,7 @@ func NewAttachedGiftsServiceInit( attachedGiftsRepo *attachedGiftsRepository.Att
 	}, nil
 }
 
-func (a *AttachedGiftsServiceInit) UpdateValidation(ag *attachedgifts.AttachedGifts) (*attachedgifts.AttachedGifts, error) {
+func (a *AttachedGiftsServiceInit) UpdateValidation(ag *attachedGifts.AttachedGifts) (*attachedGifts.AttachedGifts, error) {
 	if ag == nil {
 		Logging.Logs.Errorf("AttachedGifts is nil")
 		return nil, errors.New("attachedGifts is nil")
@@ -40,7 +40,7 @@ func (a *AttachedGiftsServiceInit) UpdateValidation(ag *attachedgifts.AttachedGi
 	return updatedGift, nil
 }
 
-func (a *AttachedGiftsServiceInit) InsertValidation(ag *attachedgifts.AttachedGifts) (*attachedgifts.AttachedGifts, error) {
+func (a *AttachedGiftsServiceInit) InsertValidation(ag *attachedGifts.AttachedGifts) (*attachedGifts.AttachedGifts, error) {
 	if ag == nil {
 		Logging.Logs.Errorf("AttachedGifts is nil")
 		return nil, errors.New("attachedGifts is nil")

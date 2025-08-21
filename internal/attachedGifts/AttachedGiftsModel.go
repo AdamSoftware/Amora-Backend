@@ -1,4 +1,4 @@
-package attachedgifts
+package attachedGifts
 
 type AttachedGifts struct {
 	Id int `gorm:"primaryKey;column:id"`

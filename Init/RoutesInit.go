@@ -26,6 +26,10 @@ import (
 	"Amora/internal/events/eventService"
 	"Amora/internal/events/eventHandler"
 	"Amora/internal/events/eventRepository"
+	"Amora/internal/attachedGifts"
+	"Amora/internal/attachedGifts/attachedGiftsHandler"
+	"Amora/internal/attachedGifts/attachedGiftsService"
+	"Amora/internal/attachedGifts/attachedGiftsRepository"
 )
 
 
@@ -103,6 +107,25 @@ func initEventModule(db *gorm.DB) (routes.RouteModule, error) {
 
 }
 
+func initAttachedGiftsModule(db *gorm.DB) (routes.RouteModule, error) {
+	coreRepo := CoreRepository.CoreRepositoryInit[*attachedGifts.AttachedGifts]{DB: db}
+	coreService := CoreService.CoreServiceInit[*attachedGifts.AttachedGifts]{Repo: &coreRepo}
+	coreHandler := CoreHandler.CoreHandlerInit[*attachedGifts.AttachedGifts]{Service: &coreService}
+
+	repo, err := attachedGiftsRepository.NewattachedgiftsRepositoryInit(db)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize attached gifts repo: %w", err)
+	}
+
+	service, err := attachedGiftsService.NewAttachedGiftsServiceInit(repo)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize attached gifts service: %w", err)
+	}
+
+	handler := attachedGiftsHandler.NewattachedGiftsHandlerInit(&coreHandler, service)
+	return routes.NewattachedGiftsModule(handler), nil
+}
+
 
 
 func RoutesInit(db *gorm.DB) {
@@ -118,6 +141,7 @@ func RoutesInit(db *gorm.DB) {
 		initSubscriptionModule,
 		initPartnerModule,
 		initEventModule,
+		initAttachedGiftsModule,
 	}
 
 	for _, initFn := range modules {
