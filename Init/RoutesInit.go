@@ -30,6 +30,10 @@ import (
 	"Amora/internal/attachedGifts/attachedGiftsHandler"
 	"Amora/internal/attachedGifts/attachedGiftsService"
 	"Amora/internal/attachedGifts/attachedGiftsRepository"
+	"Amora/internal/gifts"
+	"Amora/internal/gifts/gifthandler"
+	"Amora/internal/gifts/giftservice"
+	"Amora/internal/gifts/giftrepository"
 )
 
 
@@ -126,7 +130,24 @@ func initAttachedGiftsModule(db *gorm.DB) (routes.RouteModule, error) {
 	return routes.NewattachedGiftsModule(handler), nil
 }
 
+func initGiftModule(db *gorm.DB) (routes.RouteModule, error) {
+	coreRepo := CoreRepository.CoreRepositoryInit[*gifts.Gifts]{DB: db}
+	coreService := CoreService.CoreServiceInit[*gifts.Gifts]{Repo: &coreRepo}
+	coreHandler := CoreHandler.CoreHandlerInit[*gifts.Gifts]{Service: &coreService}
 
+	repo, err := giftrepository.NewGiftsRepositoryInit(db)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize gift repo: %w", err)
+	}
+
+	service, err := giftservice.NewGiftServiceInit(repo)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize gift service: %w", err)
+	}
+
+	handler := gifthandler.NewGiftHandlerInit(&coreHandler, service)
+	return routes.NewGiftModule(handler), nil
+}
 
 func RoutesInit(db *gorm.DB) {
 	if db == nil {
@@ -142,6 +163,7 @@ func RoutesInit(db *gorm.DB) {
 		initPartnerModule,
 		initEventModule,
 		initAttachedGiftsModule,
+		initGiftModule,
 	}
 
 	for _, initFn := range modules {
