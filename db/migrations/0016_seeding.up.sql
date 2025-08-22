@@ -18,7 +18,10 @@ INSERT INTO users (email, password, FirstName, LastName, phone_number, address, 
 INSERT INTO gifts (name, description, image_url, price, is_active) VALUES
 ('Chocolate Box', 'Assorted fine chocolates', 'https://example.com/chocolate.jpg', 25.00, true),
 ('Flower Bouquet', 'Fresh seasonal flowers', 'https://example.com/flowers.jpg', 45.00, true),
-('Wine Bottle', 'Premium red wine', 'https://example.com/wine.jpg', 55.00, true);
+('Wine Bottle', 'Premium red wine', 'https://example.com/wine.jpg', 55.00, true),
+('Gift Card', 'Gift card for any occasion', 'https://example.com/giftcard.jpg', 30.00, false),
+('Spa Voucher', 'Relaxing spa day voucher', 'https://example.com/spa.jpg', 100.00, true),
+('Dinner Reservation', 'Reservation at a top restaurant', 'https://example.com/dinner.jpg', 75.00, false);
 
 -- Seed events
 INSERT INTO events (name, description, DateOfTheEvent, is_active, user_id) VALUES
