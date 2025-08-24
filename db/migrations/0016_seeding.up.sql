@@ -40,9 +40,10 @@ INSERT INTO experienceslist (name, description, address, city, state, zip_code, 
 ('Cooking Class', 'Learn gourmet recipes', '300 Chef St', 'Springfield', 'IL', '62705', '555-7777', 80.00, 'https://example.com/cooking.jpg', true);
 
 -- Seed resteruatelist (restaurants)
-INSERT INTO resteruatelist (name, description, address, city, state, zip_code, image_url, website, is_active) VALUES
-('Mama’s Kitchen', 'Authentic Italian cuisine', '123 Pasta Blvd', 'Springfield', 'IL', '62706', 'https://example.com/mamas.jpg', 'http://mamaskitchen.com', true),
-('Sushi World', 'Fresh sushi and sashimi', '456 Fish Rd', 'Springfield', 'IL', '62707', 'https://example.com/sushi.jpg', 'http://sushiworld.com', true);
+INSERT INTO resteruatelist (name, description, address, city, state, zip_code, image_url, website, is_active, phone_number, email) VALUES
+('The Fancy Fork', 'Upscale dining experience', '400 Gourmet Ln', 'Springfield', 'IL', '62706', 'https://example.com/fancyfork.jpg', 'http://fancyfork.com', true, '555-1010', 'FakeEmail@gmail.com'),
+('Pizza Palace', 'Family-friendly pizza place', '600 Slice St', 'Springfield', 'IL', '62707', 'https://example.com/pizzapalace.jpg', 'http://pizzapalace.com', true, '555-2020', 'FakeEmail22@gmail.com'),
+('Burger Barn', 'Casual burger joint', '700 Grill Ave', 'Springfield', 'IL', '62708', 'https://example.com/burgerbarn.jpg', 'http://burgerbarn.com', false, '555-3030', 'FakeEmail23@gmail.com');
 
 -- Seed partners
 INSERT INTO partners (firstname, lastname, nickname, birthdate, phone_number, user_id, anniversary) VALUES

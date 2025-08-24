@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS resteruatelist (
     address TEXT NOT NULL,
     city TEXT NOT NULL,
     state TEXT NOT NULL,
+    phone_number TEXT,
+    email TEXT,
     zip_code TEXT NOT NULL,
     image_url TEXT,
     website TEXT,
