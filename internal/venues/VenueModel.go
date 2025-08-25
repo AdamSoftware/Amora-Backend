@@ -13,6 +13,7 @@ type Venues struct {
 	IsActive bool `gorm:"column:is_active"`
 	Website string `gorm:"column:website"`
 	ImageURL string `gorm:"column:image_url"`
+	Price float64 `gorm:"column:price"`
 }
 
 

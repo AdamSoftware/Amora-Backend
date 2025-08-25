@@ -9,5 +9,8 @@ create table if not exists venueslist (
     email varchar(100),
     website varchar(255),
     image_url varchar(255),
-    is_active boolean not null default true
+    is_active boolean not null default true,
+    -- NOTE:: I might use this in the future if I am able to get a price for different venues
+    price numeric(10, 2) not null,
+    description text
 );
