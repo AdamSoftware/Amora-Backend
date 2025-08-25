@@ -20,8 +20,7 @@ INSERT INTO gifts (name, description, image_url, price, is_active) VALUES
 ('Flower Bouquet', 'Fresh seasonal flowers', 'https://example.com/flowers.jpg', 45.00, true),
 ('Wine Bottle', 'Premium red wine', 'https://example.com/wine.jpg', 55.00, true),
 ('Gift Card', 'Gift card for any occasion', 'https://example.com/giftcard.jpg', 30.00, false),
-('Spa Voucher', 'Relaxing spa day voucher', 'https://example.com/spa.jpg', 100.00, true),
-('Dinner Reservation', 'Reservation at a top restaurant', 'https://example.com/dinner.jpg', 75.00, false);
+('Spa Voucher', 'Relaxing spa day voucher', 'https://example.com/spa.jpg', 100.00, true);
 
 -- Seed events
 INSERT INTO events (name, description, DateOfTheEvent, is_active, user_id) VALUES
@@ -30,19 +29,23 @@ INSERT INTO events (name, description, DateOfTheEvent, is_active, user_id) VALUE
 ('Winter Ball', 'Formal winter dance event', '2025-12-15', true, 2);
 
 -- Seed venueslist
-INSERT INTO venueslist (name, address, city, state, zip_code, phone_number, email, website, image_url, is_active) VALUES
-('Grand Hall', '100 Main St', 'Springfield', 'IL', '62701', '555-4444', 'info@grandhall.com', 'http://grandhall.com', 'https://example.com/venue1.jpg', true),
-('City Conference Center', '200 Center Ave', 'Springfield', 'IL', '62702', '555-5555', 'contact@ccc.com', 'http://ccc.com', 'https://example.com/venue2.jpg', true);
+INSERT INTO venueslist (name, address, city, state, zip_code, phone_number, email, website, image_url, is_active, price, description) VALUES
+('Grand Hall', '100 Main St', 'Springfield', 'IL', '62701', '555-1234', 'FakeEmail@gmail.com', 'http://grandhall.com', 'https://example.com/grandhall.jpg', true, 500.00, 'Spacious venue for large events'),
+('City Conference Center', '200 Center St', 'Springfield', 'IL', '62702', '555-5678', 'FakeFakeEmail@gmail.com', 'http://cityconference.com', 'https://example.com/conference.jpg', true, 300.00, 'Modern facilities for meetings and conferences'),
+('Movie Theater', '150 Cinema Rd', 'Springfield', 'IL', '62703', '555-8765', 'Movie@gmail.com', 'http://movietheater.com', 'https://example.com/movietheater.jpg', true, 700.99, 'Perfect for private screenings and events'),
+('Lakeside Pavilion', '300 Lake St', 'Springfield', 'IL', '62703', '555-9012', 'FakeFake21@gmail.com', 'http://lakesidepavilion.com', 'https://example.com/lakeside.jpg', false, 400.00, 'Beautiful lakeside venue for weddings and parties');
 
 -- Seed experienceslist
-INSERT INTO experienceslist (name, description, address, city, state, zip_code, phone_number, price, image_url, is_active) VALUES
-('Hot Air Balloon Ride', 'Experience the thrill of flight', '500 Balloon Rd', 'Springfield', 'IL', '62704', '555-6666', 150.00, 'https://example.com/balloon.jpg', true),
-('Cooking Class', 'Learn gourmet recipes', '300 Chef St', 'Springfield', 'IL', '62705', '555-7777', 80.00, 'https://example.com/cooking.jpg', true);
+INSERT INTO experienceslist (name, description, address, city, state, zip_code, phone_number, price, image_url, is_active, email, website) VALUES
+('Hot Air Balloon Ride', 'Experience the thrill of flight', '500 Balloon Rd', 'Springfield', 'IL', '62704', '555-6666', 150.00, 'https://example.com/balloon.jpg', true, 'TestEmail@gmail.com', 'http://hotairballoon.com'),
+('Cooking Class', 'Learn gourmet recipes', '300 Chef St', 'Springfield', 'IL', '62705', '555-7777', 80.00, 'https://example.com/cooking.jpg', true, 'TestEmail@gmail.com', null),
+('Wine Tasting', 'Sample fine wines', '600 Vineyard Ln', 'Springfield', 'IL', '62706', '555-8888', 60.00, 'https://example.com/wine.jpg', false,'TestEmail@gmail.com', null);
 
 -- Seed resteruatelist (restaurants)
-INSERT INTO resteruatelist (name, description, address, city, state, zip_code, image_url, website, is_active) VALUES
-('Mama’s Kitchen', 'Authentic Italian cuisine', '123 Pasta Blvd', 'Springfield', 'IL', '62706', 'https://example.com/mamas.jpg', 'http://mamaskitchen.com', true),
-('Sushi World', 'Fresh sushi and sashimi', '456 Fish Rd', 'Springfield', 'IL', '62707', 'https://example.com/sushi.jpg', 'http://sushiworld.com', true);
+INSERT INTO resteruatelist (name, description, address, city, state, zip_code, image_url, website, is_active, phone_number, email) VALUES
+('The Fancy Fork', 'Upscale dining experience', '400 Gourmet Ln', 'Springfield', 'IL', '62706', 'https://example.com/fancyfork.jpg', 'http://fancyfork.com', true, '555-1010', 'FakeEmail@gmail.com'),
+('Pizza Palace', 'Family-friendly pizza place', '600 Slice St', 'Springfield', 'IL', '62707', 'https://example.com/pizzapalace.jpg', 'http://pizzapalace.com', true, '555-2020', 'FakeEmail22@gmail.com'),
+('Burger Barn', 'Casual burger joint', '700 Grill Ave', 'Springfield', 'IL', '62708', 'https://example.com/burgerbarn.jpg', 'http://burgerbarn.com', false, '555-3030', 'FakeEmail23@gmail.com');
 
 -- Seed partners
 INSERT INTO partners (firstname, lastname, nickname, birthdate, phone_number, user_id, anniversary) VALUES
@@ -71,16 +74,12 @@ INSERT INTO attachedgifts (event_id, gift_id, quantity, is_active) VALUES
 (3, 3, 2, true);
 
 -- Seed reservations
-INSERT INTO reservations (
-    user_id, partner_id, event_id, restaurant_id, experience_id, venue_id, reservation_time, party_size, special_requests
-) VALUES
+INSERT INTO reservations (user_id, partner_id, event_id, restaurant_id, experience_id, venue_id, reservation_time, party_size, special_requests) VALUES
 (1, 1, 1, 1, NULL, 1, '2025-04-25 19:00:00', 4, 'Window seat please'),
 (2, 2, 2, NULL, 1, 2, '2025-07-10 12:00:00', 2, NULL);
 
 -- Seed reminders
-INSERT INTO reminders (
-    partner_id, reservation_id, "ScheduleDate", "ScheduleTime", "ReminderTimeBefore"
-) VALUES
+INSERT INTO reminders (partner_id, reservation_id, "ScheduleDate", "ScheduleTime", "ReminderTimeBefore") VALUES
 (1, 1, '2025-04-24', '17:00:00', 120),
 (2, 2, '2025-07-09', '10:00:00', 60);
 
