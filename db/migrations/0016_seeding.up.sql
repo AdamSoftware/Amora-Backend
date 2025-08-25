@@ -34,11 +34,12 @@ INSERT INTO venueslist (name, address, city, state, zip_code, phone_number, emai
 ('City Conference Center', '200 Center St', 'Springfield', 'IL', '62702', '555-5678', 'FakeFakeEmail@gmail.com', 'http://cityconference.com', 'https://example.com/conference.jpg', true, 300.00, 'Modern facilities for meetings and conferences'),
 ('Movie Theater', '150 Cinema Rd', 'Springfield', 'IL', '62703', '555-8765', 'Movie@gmail.com', 'http://movietheater.com', 'https://example.com/movietheater.jpg', true, 700.99, 'Perfect for private screenings and events'),
 ('Lakeside Pavilion', '300 Lake St', 'Springfield', 'IL', '62703', '555-9012', 'FakeFake21@gmail.com', 'http://lakesidepavilion.com', 'https://example.com/lakeside.jpg', false, 400.00, 'Beautiful lakeside venue for weddings and parties');
+
 -- Seed experienceslist
-INSERT INTO experienceslist (name, description, address, city, state, zip_code, phone_number, price, image_url, is_active, email) VALUES
-('Hot Air Balloon Ride', 'Experience the thrill of flight', '500 Balloon Rd', 'Springfield', 'IL', '62704', '555-6666', 150.00, 'https://example.com/balloon.jpg', true, 'TestEmail@gmail.com'),
-('Cooking Class', 'Learn gourmet recipes', '300 Chef St', 'Springfield', 'IL', '62705', '555-7777', 80.00, 'https://example.com/cooking.jpg', true, 'TestEmail@gmail.com'),
-('Wine Tasting', 'Sample fine wines', '600 Vineyard Ln', 'Springfield', 'IL', '62706', '555-8888', 60.00, 'https://example.com/wine.jpg', false,'TestEmail@gmail.com');
+INSERT INTO experienceslist (name, description, address, city, state, zip_code, phone_number, price, image_url, is_active, email, website) VALUES
+('Hot Air Balloon Ride', 'Experience the thrill of flight', '500 Balloon Rd', 'Springfield', 'IL', '62704', '555-6666', 150.00, 'https://example.com/balloon.jpg', true, 'TestEmail@gmail.com', 'http://hotairballoon.com'),
+('Cooking Class', 'Learn gourmet recipes', '300 Chef St', 'Springfield', 'IL', '62705', '555-7777', 80.00, 'https://example.com/cooking.jpg', true, 'TestEmail@gmail.com', null),
+('Wine Tasting', 'Sample fine wines', '600 Vineyard Ln', 'Springfield', 'IL', '62706', '555-8888', 60.00, 'https://example.com/wine.jpg', false,'TestEmail@gmail.com', null);
 
 -- Seed resteruatelist (restaurants)
 INSERT INTO resteruatelist (name, description, address, city, state, zip_code, image_url, website, is_active, phone_number, email) VALUES

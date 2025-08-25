@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS experienceslist (
     email VARCHAR(100),
     price NUMERIC(10, 2) NOT NULL,
     image_url VARCHAR(255),
-    is_active BOOLEAN NOT NULL DEFAULT true
+    is_active BOOLEAN NOT NULL DEFAULT true,
+    website varchar(255)
 );
 

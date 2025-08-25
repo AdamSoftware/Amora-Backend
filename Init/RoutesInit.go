@@ -42,6 +42,10 @@ import (
 	"Amora/internal/venues/venueservice"
 	"Amora/internal/venues/venuehandler"
 	"Amora/internal/venues/venuerepository"
+	"Amora/internal/experiences"
+	"Amora/internal/experiences/experiencehandler"
+	"Amora/internal/experiences/experienceservice"
+	"Amora/internal/experiences/experiencerepository"
 )
 
 
@@ -196,6 +200,25 @@ func initVenueModule(db *gorm.DB) (routes.RouteModule, error) {
 	return routes.NewVenueModule(handler), nil
 }
 
+func initExperienceModule(db *gorm.DB) (routes.RouteModule, error) {
+	coreRepo := CoreRepository.CoreRepositoryInit[*experiences.Experiences]{DB: db}
+	coreService := CoreService.CoreServiceInit[*experiences.Experiences]{Repo: &coreRepo}
+	coreHandler := CoreHandler.CoreHandlerInit[*experiences.Experiences]{Service: &coreService}
+
+	repo, err := experiencerepository.NewExperiencesRepositoryInit(db)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize experience repo: %w", err)
+	}
+
+	service, err := experienceservice.NewExperienceServiceInit(repo)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize experience service: %w", err)
+	}
+
+	handler := experiencehandler.NewExperienceHandlerInit(&coreHandler, service)
+	return routes.NewExperienceModule(handler), nil
+}
+
 func RoutesInit(db *gorm.DB) {
 	if db == nil {
 		panic("❌ Database connection is nil")
@@ -213,6 +236,7 @@ func RoutesInit(db *gorm.DB) {
 		initGiftModule,
 		initRestuarantModule,
 		initVenueModule,
+		initExperienceModule,
 	}
 
 	for _, initFn := range modules {
