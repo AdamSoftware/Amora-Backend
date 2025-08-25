@@ -6,10 +6,9 @@ type Plans struct {
 	Price float64 `gorm:"column:price"`
 }
 
-
 // TableName remains unchanged
 func (Plans) TableName() string {
-	return "gifts"
+	return "plans"
 }
 
 func (u *Plans) GetId() int {
