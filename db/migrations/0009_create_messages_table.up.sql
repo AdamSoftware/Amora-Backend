@@ -8,7 +8,7 @@ create type message_statuses AS ENUM (
 
 CREATE TABLE IF NOT EXISTS messages (
     id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    partner_id INT NOT NULL REFERENCES partners(id) ON DELETE CASCADE, 
+    user_id int NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
     status message_statuses not null,
     sent_at TIMESTAMPTZ,
