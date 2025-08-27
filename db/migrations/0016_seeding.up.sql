@@ -53,7 +53,7 @@ INSERT INTO partners (firstname, lastname, nickname, birthdate, phone_number, us
 ('Jane', 'Smith', NULL, '1990-08-19', '555-9999', 2, '2015-08-19');
 
 -- Seed messages
-INSERT INTO messages (partner_id, content, status, sent_at, created_at, updated_at) VALUES
+INSERT INTO messages (user_id, content, status, sent_at, created_at, updated_at) VALUES
 (1, 'Welcome to our service!', 'sent', '2025-01-01 10:00:00+00', NOW(), NOW()),
 (2, 'Your reservation is confirmed.', 'pending', NULL, NOW(), NOW());
 
