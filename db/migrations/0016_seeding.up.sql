@@ -75,11 +75,14 @@ INSERT INTO attachedgifts (event_id, gift_id, quantity, is_active) VALUES
 
 -- Seed reservations
 INSERT INTO reservations (user_id, partner_id, event_id, restaurant_id, experience_id, venue_id, reservation_time, party_size, special_requests) VALUES
-(1, 1, 1, 1, NULL, 1, '2025-04-25 19:00:00', 4, 'Window seat please'),
-(2, 2, 2, NULL, 1, 2, '2025-07-10 12:00:00', 2, NULL);
+(1, 1, 1, 1, NULL, NULL, '2025-04-25 18:00:00+00', 2, 'Window seat'),
+(2, 2, 2, NULL, 1, NULL, '2025-07-10 12:00:00+00', 4, 'Vegetarian options'),
+(1, 1, 3, NULL, NULL, 1, '2025-12-15 20:00:00+00', 2, 'Near the stage'),
+(2, 2, 1, null, 2, NULL, '2025-05-20 19:00:00+00', 3, 'Birthday celebration');
+
 
 -- Seed reminders
-INSERT INTO reminders (partner_id, reservation_id, "ScheduleDate", "ScheduleTime", "ReminderTimeBefore") VALUES
+INSERT INTO reminders (user_id, reservation_id, "ScheduleDate", "ScheduleTime", "ReminderTimeBefore") VALUES
 (1, 1, '2025-04-24', '17:00:00', 120),
 (2, 2, '2025-07-09', '10:00:00', 60);
 

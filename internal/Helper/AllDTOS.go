@@ -1,5 +1,56 @@
 package helper
 
+type ReservationDetailsDTO struct {
+	ReservationID   int     `json:"reservation_id"`
+	PartnerName     string  `json:"partner_name,omitempty"`
+	ReservationTime string  `json:"reservation_time"`
+	PartySize       int     `json:"party_size"`
+	SpecialRequests *string `json:"special_requests,omitempty"`
+	// there will only be one of these at a time each reservation is either a venue, restaurant or experience
+	VenueDetails   *VenueDetailsDTO      `json:"venue_details,omitempty"`
+	RestaurantDetails *RestaurantDetailsDTO `json:"restaurant_details,omitempty"`
+	ExperienceDetails *ExperienceDetailsDTO `json:"experience_details,omitempty"`
+}
+
+type VenueDetailsDTO struct {
+	Id       int     `json:"id"`
+	VenueName string  `json:"venue_name"`
+	Address  string  `json:"address"`
+	City     string  `json:"city"`
+	State    string  `json:"state"`
+	ZipCode  string  `json:"zip_code"`
+	Phone    *string `json:"phone,omitempty"`
+	Email    *string `json:"email,omitempty"`
+	Website  *string `json:"website,omitempty"`
+	Price 	*float64 `json:"price,omitempty"`
+	ImageURL *string `json:"image_url,omitempty"`
+}
+
+type ExperienceDetailsDTO struct {
+	Id             int     `json:"id"`
+	ExperienceName string  `json:"experience_name"`
+	Description    *string `json:"description,omitempty"`
+	Address        string  `json:"address"`
+	City           string  `json:"city"`
+	State          string  `json:"state"`
+	ZipCode        string  `json:"zip_code"`
+	Phone          *string `json:"phone,omitempty"`
+	Price          *float64 `json:"price,omitempty"`
+	ImageURL       *string `json:"image_url,omitempty"`
+}
+
+type RestaurantDetailsDTO struct {
+	Id             int     `json:"id"`
+	RestaurantName string  `json:"restaurant_name"`
+	Description    *string `json:"description,omitempty"`
+	Address        string  `json:"address"`
+	City           string  `json:"city"`
+	State          string  `json:"state"`
+	ZipCode        string  `json:"zip_code"`
+	ImageURL       *string `json:"image_url,omitempty"`
+	Website        *string `json:"website,omitempty"`
+}
+
 type GiftDTO struct {
 	Id          int    `json:"id"`
 	Name        string `json:"name"`
