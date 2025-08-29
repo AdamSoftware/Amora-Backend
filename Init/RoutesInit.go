@@ -54,6 +54,10 @@ import (
 	"Amora/internal/messages/messagehandler"
 	"Amora/internal/messages/messageservice"
 	"Amora/internal/messages/messagerepository"
+	"Amora/internal/reservations"
+	"Amora/internal/reservations/reservationhandler"
+	"Amora/internal/reservations/reservationservice"
+	"Amora/internal/reservations/reservationrepository"
 )
 
 
@@ -265,6 +269,25 @@ func initMessageModule(db *gorm.DB) (routes.RouteModule, error) {
 	return routes.NewMessageModule(handler), nil
 }
 
+func initReservationModule(db *gorm.DB) (routes.RouteModule, error) {
+	coreRepo := CoreRepository.CoreRepositoryInit[*reservations.Reservations]{DB: db}
+	coreService := CoreService.CoreServiceInit[*reservations.Reservations]{Repo: &coreRepo}
+	coreHandler := CoreHandler.CoreHandlerInit[*reservations.Reservations]{Service: &coreService}
+
+	repo, err := reservationrepository.NewreservationRepositoryInit(db)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize reservation repo: %w", err)
+	}
+
+	service, err := reservationservice.NewReservationServiceInit(repo)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize reservation service: %w", err)
+	}
+
+	handler := reservationhandler.NewReservationHandlerInit(&coreHandler, service)
+	return routes.NewreservationsModule(handler), nil
+}
+
 func RoutesInit(db *gorm.DB) {
 	if db == nil {
 		panic("❌ Database connection is nil")
@@ -285,6 +308,7 @@ func RoutesInit(db *gorm.DB) {
 		initExperienceModule,
 		initPlanModule,
 		initMessageModule,
+		initReservationModule,
 	}
 
 	for _, initFn := range modules {
