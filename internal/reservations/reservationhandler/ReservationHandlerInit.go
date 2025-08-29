@@ -168,3 +168,4 @@ func (u *ReservationHandlerInit) GetByEventId(w http.ResponseWriter, r *http.Req
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(entities)
 }
+
