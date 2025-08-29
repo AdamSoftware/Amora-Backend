@@ -58,6 +58,10 @@ import (
 	"Amora/internal/reservations/reservationhandler"
 	"Amora/internal/reservations/reservationservice"
 	"Amora/internal/reservations/reservationrepository"
+	"Amora/internal/reminders"
+	"Amora/internal/reminders/reminderhandler"
+	"Amora/internal/reminders/reminderservice"
+	"Amora/internal/reminders/reminderrepository"
 )
 
 
@@ -288,6 +292,25 @@ func initReservationModule(db *gorm.DB) (routes.RouteModule, error) {
 	return routes.NewreservationsModule(handler), nil
 }
 
+func initReminderModule(db *gorm.DB) (routes.RouteModule, error) {
+	coreRepo := CoreRepository.CoreRepositoryInit[*reminders.Reminders]{DB: db}
+	coreService := CoreService.CoreServiceInit[*reminders.Reminders]{Repo: &coreRepo}
+	coreHandler := CoreHandler.CoreHandlerInit[*reminders.Reminders]{Service: &coreService}
+
+	repo, err := reminderrepository.NewreminderRepositoryInit(db)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize reminder repo: %w", err)
+	}
+
+	service, err := reminderservice.NewReminderServiceInit(repo)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize reminder service: %w", err)
+	}
+
+	handler := reminderhandler.NewReminderHandlerInit(&coreHandler, service)
+	return routes.NewremindersModule(handler), nil
+}
+
 func RoutesInit(db *gorm.DB) {
 	if db == nil {
 		panic("❌ Database connection is nil")
@@ -309,6 +332,7 @@ func RoutesInit(db *gorm.DB) {
 		initPlanModule,
 		initMessageModule,
 		initReservationModule,
+		initReminderModule,
 	}
 
 	for _, initFn := range modules {
