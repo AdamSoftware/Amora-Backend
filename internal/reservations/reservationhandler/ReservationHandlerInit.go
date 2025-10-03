@@ -138,7 +138,7 @@ func (u *ReservationHandlerInit) GetByUserId(w http.ResponseWriter, r *http.Requ
 		}
 		// this would should never happen but just in case
 		if len(entities) == 0 { 
-				helper.WriteError(w, http.StatusNotFound, "No reservations found for the user")
+				helper.WriteError(w, http.StatusAccepted, "No reservations found for the user")
 				return
 		}
 

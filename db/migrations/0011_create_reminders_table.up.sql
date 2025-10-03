@@ -3,9 +3,9 @@ create table if not exists reminders (
     user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     reservation_id INT NOT NULL REFERENCES reservations(id) ON DELETE CASCADE,
     "ScheduleDate" DATE NOT NULL,
-    "ScheduleTime" DATE NOT NULL, 
+    "ScheduleTime" TIME NOT NULL, 
     "ReminderDate" DATE,
-    "ReminderTime" DATE,
+    "ReminderTime" TIME,
     "ReminderTimeBefore" INT NOT NULL DEFAULT 120 -- in minutes
 );
 

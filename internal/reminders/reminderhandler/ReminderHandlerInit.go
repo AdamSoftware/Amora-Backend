@@ -138,10 +138,9 @@ func (u *ReminderHandlerInit) FindByUserId(w http.ResponseWriter, r *http.Reques
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 		}
-		// error if the reminder just can't be found
 		if len(entities) == 0 {
-			  helper.WriteError(w, http.StatusNotFound, "No reminders found for the user")
-				return
+			  helper.WriteError(w, http.StatusAccepted, "No reminders found for the user")
+				return 
 		}
 
 		w.Header().Set("Content-Type", "application/json")

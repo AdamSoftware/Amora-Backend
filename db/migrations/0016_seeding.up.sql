@@ -86,3 +86,4 @@ INSERT INTO reminders (user_id, reservation_id, "ScheduleDate", "ScheduleTime", 
 (1, 1, '2025-04-24', '17:00:00', 120),
 (2, 2, '2025-07-09', '10:00:00', 60);
 
+

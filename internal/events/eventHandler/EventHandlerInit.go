@@ -136,7 +136,7 @@ func (u *EventHandlerInit) FindByUserId(w http.ResponseWriter, r *http.Request) 
 				return
 		}
 		if len(entities) == 0 {
-			  helper.WriteError(w, http.StatusNotFound, "No events found for this user")
+			  helper.WriteError(w, http.StatusAccepted, "No events found for this user")
 				return
 		}
 
