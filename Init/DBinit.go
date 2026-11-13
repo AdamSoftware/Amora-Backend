@@ -20,7 +20,8 @@ func DBinit() *gorm.DB {
         log.Printf("Warning: failed to load .env file: %v", err)
     }
 
-    dbURL := os.Getenv("AmoradbConnectionStringLocal")
+		dbURL := os.Getenv("AmoradbConnectionString")
+    //dbURL := os.Getenv("AmoradbConnectionStringLocal")
     var db *gorm.DB
 
     const maxRetries = 10

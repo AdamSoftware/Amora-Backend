@@ -1,11 +1,8 @@
-
 version: "3.9"
 
 services:
   db:
     image: postgres:15
-    networks:
-      - appnet
     environment:
       POSTGRES_USER: ${AmoradbUser}
       POSTGRES_PASSWORD: ${AmoradbPassword}
@@ -14,34 +11,25 @@ services:
       - db-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-
-  migrate:
-    build:
-      context: .
-      dockerfile: Dockerfile.migrate
-    depends_on:
-      - db
-    environment:
-      - AmoradbConnectionString=${AmoradbConnectionString}
-    networks:
-      - appnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${AmoradbUser} -d Amoradb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
-      - db
-      - migrate
+      db:
+        condition: service_healthy
     environment:
-      - DATABASE_URL=${AmoradbConnectionString}
-    networks:
-      - appnet
+      AmoradbConnectionString: ${AmoradbConnectionString}
+      JWT_SECRET_KEY: ${JWT_SECRET} 
     ports:
       - "8080:8080"
-    command: ["./your-app-binary"]
 
 volumes:
   db-data:
-
-networks:
-  appnet:
 
